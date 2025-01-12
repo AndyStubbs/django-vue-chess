@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 import TestMessage from "./components/TestMessage.vue";
+import TestModal from "./components/TestModal.vue";
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import TestMessage from "./components/TestMessage.vue";
 		<div class="wrapper">
 			<HelloWorld msg="You did it!" />
 			<TestMessage />
+			<TestModal />
 			<nav>
 				<RouterLink to="/">Home</RouterLink>
 				<RouterLink to="/about">About</RouterLink>
