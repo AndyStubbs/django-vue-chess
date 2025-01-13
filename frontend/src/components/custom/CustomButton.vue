@@ -5,7 +5,10 @@
 <script setup>
 import { computed } from "vue";
 const props = defineProps({
-	variant: String,
+	variant: {
+		type: String,
+		default: "1",
+	},
 });
 const className = computed(() => `btn-${props.variant}`);
 </script>

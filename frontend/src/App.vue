@@ -42,13 +42,11 @@
 		</footer>
 
 		<!-- Modals -->
-		<CustomModal
-			v-if="showAccountModal"
-			title="Login"
-			:isVisible="showAccountModal"
-			@close="closeAccountModal"
-		>
+		<CustomModal title="Login" :isVisible="showAccountModal" @close="closeAccountModal">
 			<LoginRegister />
+			<template #footer>
+				<CustomButton @click="showModal = false" variant="1">Close</CustomButton>
+			</template>
 		</CustomModal>
 	</div>
 </template>

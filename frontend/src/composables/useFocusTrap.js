@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, watch, onBeforeUnmount } from "vue";
 
 export function useFocusTrap() {
 	const focusTrapElement = ref(null);
@@ -36,7 +36,8 @@ export function useFocusTrap() {
 
 		// Move focus to the first focusable element in the modal
 		const focusableElements = focusTrapElement.value.querySelectorAll(
-			'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+			"a[href], area[href], input:not([disabled]), select:not([disabled]), " +
+				"textarea:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex='-1'])",
 		);
 		if (focusableElements.length > 0) {
 			focusableElements[0].focus();
@@ -57,8 +58,16 @@ export function useFocusTrap() {
 		}
 	}
 
+	/*
 	onMounted(() => {
 		if (focusTrapElement.value) {
+			activateFocusTrap();
+		}
+	});
+	*/
+
+	watch(focusTrapElement, (newValue) => {
+		if (newValue) {
 			activateFocusTrap();
 		}
 	});
