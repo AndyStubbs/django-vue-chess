@@ -1,86 +1,280 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* colors.css */
+
 :root {
-	--vt-c-white: #ffffff;
-	--vt-c-white-soft: #f8f8f8;
-	--vt-c-white-mute: #f2f2f2;
+	/* Fonts */
+	--font-body: "Roboto", sans-serif;
+	--font-header: "Playfair Display", serif;
 
-	--vt-c-black: #181818;
-	--vt-c-black-soft: #222222;
-	--vt-c-black-mute: #282828;
+	/* Light mode colors */
+	--bg-color-1: #cfcfcf;
+	--bg-color-2: #f4f4f4;
+	--bg-color-3: #ddd;
+	--bg-color-4: #eee;
+	--fg-color-1: #000000;
+	--fg-color-2: #333;
+	--shadow-color-1: rgba(0, 0, 0, 0.1);
+	--shadow-color-2: rgba(0, 0, 0, 0.5);
+	--input-bg-color-1: #fff;
+	--border-color-1: #ddd;
+	--green-color-1: #4caf50;
+	--light-overlay: rgba(255, 255, 255, 0.8);
+	--dark-overlay: rgba(0, 0, 0, 0.4);
+	--link-color: #2153c7;
+	--link-hover-color: #0e2d66;
 
-	--vt-c-indigo: #2c3e50;
+	/* Scrollbar Colors */
+	--track-bg-color: #ddd;
+	--thumb-bg-color: #ccc;
+	--thumb-border-color: #777;
+	--thumb-hover-bg-color: #bbb;
+	--thumb-horizontal-bg-color: #eee;
 
-	--vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-	--vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-	--vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-	--vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+	/* Button 1 */
+	--btn-text-color-1: #fff;
+	--btn-bg-color-1: #383;
+	--btn-hover-bg-color-1: #363;
 
-	--vt-c-text-light-1: var(--vt-c-indigo);
-	--vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-	--vt-c-text-dark-1: var(--vt-c-white);
-	--vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
-}
+	/* Button 2 */
+	--btn-text-color-2: #000000;
+	--btn-bg-color-2: #f1f1f1;
+	--btn-border-color-2: #ccc;
+	--btn-hover-bg-color-2: #ddd;
 
-/* semantic color variables for this project */
-:root {
-	--color-background: var(--vt-c-white);
-	--color-background-soft: var(--vt-c-white-soft);
-	--color-background-mute: var(--vt-c-white-mute);
+	/* Button 3 */
+	--btn-text-color-3: #000;
+	--btn-bg-color-3: #fff;
+	--btn-border-color-3: #9797ce;
+	--btn-hover-border-color-3: #55e;
+	--btn-hover-bg-color-3: #eee;
+	--btn-disabled-border-color-3: #999;
 
-	--color-border: var(--vt-c-divider-light-2);
-	--color-border-hover: var(--vt-c-divider-light-1);
+	/* Button 4 */
+	--button-4-bg-color: #833;
+	--button-4-text-color: #fff;
+	--button-4-hover-bg-color: #633;
 
-	--color-heading: var(--vt-c-text-light-1);
-	--color-text: var(--vt-c-text-light-1);
+	/* Status Colors */
+	--status-success-color: #383;
+	--status-success-color-light: #33de3308;
+	--status-error-color: #833;
+	--status-error-color-light: #fa333308;
 
-	--section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--color-background: var(--vt-c-black);
-		--color-background-soft: var(--vt-c-black-soft);
-		--color-background-mute: var(--vt-c-black-mute);
-
-		--color-border: var(--vt-c-divider-dark-2);
-		--color-border-hover: var(--vt-c-divider-dark-1);
-
-		--color-heading: var(--vt-c-text-dark-1);
-		--color-text: var(--vt-c-text-dark-2);
+	.icon-dark {
+		display: none;
 	}
 }
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	margin: 0;
-	font-weight: normal;
+.dark {
+	/* Dark mode colors */
+	--bg-color-1: #1c1c1c;
+	--fg-color-1: #aaa;
+	--fg-color-2: #888;
+	--bg-color-2: #222;
+	--input-bg-color-1: #1e1e1e;
+	--shadow-color-1: rgba(255, 255, 255, 0.1);
+	--shadow-color-2: rgba(255, 255, 255, 0.25);
+	--border-color-1: #3f3f3f;
+	--green-color-1: #4caf50;
+	--bg-color-3: #2f2f2f;
+	--light-overlay: rgba(0, 0, 0, 0.8);
+	--dark-overlay: rgba(0, 0, 0, 0.4);
+	--track-bg-color: #1a1a1a;
+	--thumb-bg-color: #333;
+	--thumb-border-color: #555;
+	--thumb-hover-bg-color: #2a2a2a;
+	--thumb-horizontal-bg-color: #333;
+	--bg-color-4: #111;
+	--dark-overlay: rgba(255, 255, 255, 0.35);
+	--link-color: #91add4;
+	--link-hover-color: #6f88be;
+
+	/* Button 1 */
+	--btn-text-color-1: #eaeaea;
+	--btn-bg-color-1: #383;
+	--btn-hover-bg-color-1: #363;
+
+	/* Button 2 */
+	--btn-text-color-2: #f4f4f4;
+	--btn-bg-color-2: #4a4a4a;
+	--btn-border-color-2: #777777;
+	--btn-hover-bg-color-2: #666666;
+
+	/* Button 3 */
+	--btn-text-color-3: #eaeaea;
+	--btn-bg-color-3: #111;
+	--btn-border-color-3: #9797ce;
+	--btn-hover-border-color-3: #55e;
+	--btn-hover-bg-color-3: #181818;
+	--btn-disabled-border-color-3: #999;
+
+	/* Status Colors */
+	--status-success-color: #3a3;
+	--status-error-color: #e33;
+	--status-success-color-light: #091209ee;
+	--status-error-color-light: #120909ee;
+
+	.icon-dark {
+		display: block;
+	}
+	.icon-light {
+		display: none;
+	}
 }
 
 body {
-	min-height: 100vh;
-	color: var(--color-text);
-	background: var(--color-background);
-	transition:
-		color 0.5s,
-		background-color 0.5s;
+	background-color: var(--bg-color-1);
+	color: var(--fg-color-1);
+	margin: 0;
 	line-height: 1.6;
-	font-family:
-		Inter,
-		-apple-system,
-		BlinkMacSystemFont,
-		"Segoe UI",
-		Roboto,
-		Oxygen,
-		Ubuntu,
-		Cantarell,
-		"Fira Sans",
-		"Droid Sans",
-		"Helvetica Neue",
-		sans-serif;
-	font-size: 15px;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
+}
+
+header {
+	background-color: var(--bg-color-2);
+	color: var(--fg-color-2);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-header);
+	margin: 0;
+}
+
+a,
+a:visited,
+a:active,
+a:link {
+	color: var(--link-color);
+}
+a:hover {
+	color: var(--link-hover-color);
+}
+
+.icon-btn,
+.close {
+	background-color: var(--button-bg-color-2);
+	color: var(--fg-color-1);
+}
+.icon-btn:hover,
+.close {
+	background-color: var(--button-hover-bg-color-2);
+}
+
+.btn-eye {
+	background-color: var(--border-color-1);
+}
+.btn-eye:hover {
+	background-color: var(--button-hover-bg-color-2);
+}
+
+input,
+textarea,
+select,
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-internal-autofill-selected,
+input[type="password"]:-webkit-autofill,
+input[type="password"]:-webkit-autofill:hover,
+input[type="password"]:-webkit-autofill:focus,
+input[type="password"]:-webkit-autofill:active,
+input[type="password"]:-internal-autofill-selected {
+	border: 1px solid var(--fg-color-1);
+	background-color: var(--input-bg-color-1) !important;
+	color: var(--fg-color-1);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+	background-color: var(--btn-disabled-border-color-3);
+}
+
+h2 {
+	color: var(--fg-color-1);
+}
+
+.btn-c1 {
+	background-color: var(--btn-bg-color-1);
+	color: var(--btn-text-color-1);
+}
+.btn-c1:hover {
+	background-color: var(--btn-hover-bg-color-1);
+}
+.btn-c1:disabled {
+	border-color: var(--btn-disabled-border-color-3);
+	background-color: var(--btn-hover-bg-color-3);
+	cursor: default;
+}
+.btn-c1:hover:disabled {
+	border-color: var(--btn-disabled-border-color-3);
+	background-color: var(--btn-hover-bg-color-3);
+	cursor: default;
+}
+
+.btn-c2 {
+	background-color: var(--btn-bg-color-2);
+	color: var(--btn-text-color-2);
+	border-color: var(--btn-border-color-2) !important;
+}
+.btn-c2:hover {
+	background-color: var(--btn-hover-bg-color-2);
+}
+
+.btn-c3 {
+	background-color: var(--btn-bg-color-3);
+	color: var(--btn-text-color-3);
+	border-color: var(--btn-border-color-3);
+}
+.btn-c3:hover {
+	background-color: var(--btn-bg-color-3);
+	border-color: var(--btn-hover-border-color-3);
+}
+.btn-c3:disabled {
+	border-color: var(--btn-disabled-border-color-3);
+	background-color: var(--btn-hover-bg-color-3);
+	cursor: default;
+}
+
+.btn-c3.correct {
+	border-color: var(--status-success-color);
+}
+.btn-c3.wrong {
+	border-color: var(--status-error-color);
+}
+
+.btn-c4 {
+	background-color: var(--button-4-bg-color);
+	color: var(--button-4-text-color);
+}
+.btn-c4:hover {
+	background-color: var(--button-4-hover-bg-color);
+}
+
+::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-track {
+	background: var(--track-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--thumb-bg-color);
+	border: 3px solid var(--thumb-border-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--thumb-hover-bg-color);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+	border: 3px solid var(--thumb-horizontal-bg-color);
 }

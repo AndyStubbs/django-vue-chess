@@ -1,86 +1,103 @@
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-import TestMessage from "./components/TestMessage.vue";
-import TestModal from "./components/TestModal.vue";
-</script>
-
 <template>
-	<header>
-		<div class="wrapper">
-			<HelloWorld msg="You did it!" />
-			<TestMessage />
-			<TestModal />
+	<div id="app">
+		<!-- Header -->
+		<header>
+			<div class="logo">Chess App</div>
 			<nav>
-				<RouterLink to="/">Home</RouterLink>
-				<RouterLink to="/about">About</RouterLink>
+				<ul class="nav-links">
+					<li><router-link to="/">Home</router-link></li>
+					<li><router-link to="/play">Play</router-link></li>
+					<li><router-link to="/leaderboard">Leaderboard</router-link></li>
+				</ul>
+				<div class="auth-links">
+					<button @click="openLoginModal">Login</button>
+					<button @click="openRegisterModal">Register</button>
+				</div>
+				<!-- Dark Mode Toggle -->
+				<div class="theme-toggle">
+					<button @click="toggleTheme">
+						{{ theme === "dark" ? "Light Mode" : "Dark Mode" }}
+					</button>
+				</div>
 			</nav>
-		</div>
-	</header>
+		</header>
 
-	<RouterView />
+		<!-- Main Content -->
+		<main>
+			<router-view />
+		</main>
+
+		<!-- Footer -->
+		<footer>
+			<p>© 2025 Chess App. All rights reserved.</p>
+		</footer>
+
+		<!-- Modals -->
+		<BasicModal
+			v-if="showLoginModal"
+			title="Login"
+			:isVisible="showLoginModal"
+			@close="closeLoginModal"
+		/>
+		<BasicModal
+			v-if="showRegisterModal"
+			title="Register"
+			:isVisible="showRegisterModal"
+			@close="closeRegisterModal"
+		/>
+	</div>
 </template>
 
-<style scoped>
-header {
-	line-height: 1.5;
-	max-height: 100vh;
+<script setup>
+import { ref, watchEffect } from "vue";
+import BasicModal from "@/components/BasicModal.vue";
+
+// Modals
+const showLoginModal = ref(false);
+const showRegisterModal = ref(false);
+
+function openLoginModal() {
+	showLoginModal.value = true;
 }
 
-.logo {
-	display: block;
-	margin: 0 auto 2rem;
+function closeLoginModal() {
+	showLoginModal.value = false;
 }
 
-nav {
-	width: 100%;
-	font-size: 12px;
-	text-align: center;
-	margin-top: 2rem;
+function openRegisterModal() {
+	showRegisterModal.value = true;
 }
 
-nav a.router-link-exact-active {
-	color: var(--color-text);
+function closeRegisterModal() {
+	showRegisterModal.value = false;
 }
 
-nav a.router-link-exact-active:hover {
-	background-color: transparent;
+// Theme Management
+const theme = ref("light");
+
+// Detect system preference on mount
+if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+	theme.value = "dark";
 }
 
-nav a {
-	display: inline-block;
-	padding: 0 1rem;
-	border-left: 1px solid var(--color-border);
+// Watch for system changes to theme preference
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+	theme.value = e.matches ? "dark" : "light";
+	applyTheme();
+});
+
+function toggleTheme() {
+	theme.value = theme.value === "dark" ? "light" : "dark";
+	applyTheme();
 }
 
-nav a:first-of-type {
-	border: 0;
+// Apply the theme to the body element
+function applyTheme() {
+	document.body.className = theme.value;
 }
 
-@media (min-width: 1024px) {
-	header {
-		display: flex;
-		place-items: center;
-		padding-right: calc(var(--section-gap) / 2);
-	}
-
-	.logo {
-		margin: 0 2rem 0 0;
-	}
-
-	header .wrapper {
-		display: flex;
-		place-items: flex-start;
-		flex-wrap: wrap;
-	}
-
-	nav {
-		text-align: left;
-		margin-left: -1rem;
-		font-size: 1rem;
-
-		padding: 1rem 0;
-		margin-top: 1rem;
-	}
-}
-</style>
+// Apply the theme initially and on change
+watchEffect(() => {
+	applyTheme();
+});
+</script>
