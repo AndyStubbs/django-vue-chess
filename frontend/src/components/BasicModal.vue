@@ -1,10 +1,10 @@
 <template>
 	<div v-if="isVisible" class="modal-overlay" @click="handleBackdropClick">
 		<div class="modal-content" @click.stop>
-			<header class="modal-header">
+			<div class="modal-header">
 				<h3>{{ title }}</h3>
 				<button class="close-button" @click="closeModal">x</button>
-			</header>
+			</div>
 			<div class="modal-body">
 				<slot />
 			</div>
@@ -16,8 +16,6 @@
 </template>
 
 <script setup>
-//import { emit } from "vue";
-
 const props = defineProps({
 	title: {
 		type: String,
@@ -53,7 +51,7 @@ function handleBackdropClick() {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
+	background: var(--dark-overlay);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -61,12 +59,12 @@ function handleBackdropClick() {
 }
 
 .modal-content {
-	background: #fff;
+	background: var(--bg-color-1);
 	padding: 1.5rem;
 	border-radius: 8px;
 	width: 90%;
 	max-width: 500px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 10px var(--shadow-color-2);
 	position: relative;
 }
 
@@ -74,7 +72,7 @@ function handleBackdropClick() {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: 1px solid #eaeaea;
+	border-bottom: 1px solid var(--border-color-1);
 	padding-bottom: 0.5rem;
 	margin-bottom: 1rem;
 }
@@ -84,7 +82,7 @@ function handleBackdropClick() {
 	border: none;
 	font-size: 1.5rem;
 	cursor: pointer;
-	color: #333;
+	color: var(--fg-color-1);
 }
 
 .modal-body {

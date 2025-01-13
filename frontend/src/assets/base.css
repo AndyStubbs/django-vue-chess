@@ -6,8 +6,8 @@
 	--font-header: "Playfair Display", serif;
 
 	/* Light mode colors */
-	--bg-color-1: #cfcfcf;
-	--bg-color-2: #f4f4f4;
+	--bg-color-1: #f4f4f4;
+	--bg-color-2: #e8e8e8;
 	--bg-color-3: #ddd;
 	--bg-color-4: #eee;
 	--fg-color-1: #000000;
@@ -18,7 +18,7 @@
 	--border-color-1: #ddd;
 	--green-color-1: #4caf50;
 	--light-overlay: rgba(255, 255, 255, 0.8);
-	--dark-overlay: rgba(0, 0, 0, 0.4);
+	--dark-overlay: rgba(0, 0, 0, 0.2);
 	--link-color: #2153c7;
 	--link-hover-color: #0e2d66;
 
@@ -77,14 +77,13 @@
 	--green-color-1: #4caf50;
 	--bg-color-3: #2f2f2f;
 	--light-overlay: rgba(0, 0, 0, 0.8);
-	--dark-overlay: rgba(0, 0, 0, 0.4);
+	--dark-overlay: rgba(0, 0, 0, 0.2);
 	--track-bg-color: #1a1a1a;
 	--thumb-bg-color: #333;
 	--thumb-border-color: #555;
 	--thumb-hover-bg-color: #2a2a2a;
 	--thumb-horizontal-bg-color: #333;
 	--bg-color-4: #111;
-	--dark-overlay: rgba(255, 255, 255, 0.35);
 	--link-color: #91add4;
 	--link-hover-color: #6f88be;
 
