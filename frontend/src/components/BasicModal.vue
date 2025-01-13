@@ -1,6 +1,11 @@
 <template>
-	<div v-if="isVisible" class="modal-overlay" @click="handleBackdropClick">
-		<div class="modal-content" @click.stop>
+	<div
+		v-if="isVisible"
+		class="modal-overlay"
+		@click="handleBackdropClick"
+		@keydown.esc="closeModal"
+	>
+		<div class="modal-content" @click.stop ref="focusTrapElement">
 			<div class="modal-header">
 				<h3>{{ title }}</h3>
 				<button class="close-button" @click="closeModal">x</button>
@@ -8,14 +13,16 @@
 			<div class="modal-body">
 				<slot />
 			</div>
-			<footer class="modal-footer">
+			<div class="modal-footer">
 				<slot name="footer" />
-			</footer>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
+import { useFocusTrap } from "@/composables/useFocusTrap";
+const { focusTrapElement } = useFocusTrap();
 const props = defineProps({
 	title: {
 		type: String,

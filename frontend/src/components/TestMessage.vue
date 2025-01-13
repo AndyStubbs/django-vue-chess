@@ -22,9 +22,3 @@ const fetchMessage = async () => {
 	}
 };
 </script>
-
-<style>
-h1 {
-	color: #333;
-}
-</style>
