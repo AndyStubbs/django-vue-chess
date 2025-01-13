@@ -2,20 +2,25 @@
 	<div>
 		<h1>{{ message }}</h1>
 
-		<button @click="fetchMessage">Load Message</button>
+		<CustomButton variant="1" @click="fetchMessage" :disabled="btnDisabled"
+			>Load Message</CustomButton
+		>
 	</div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import CustomButton from "./CustomButton.vue";
 
 const message = ref("Click the button to load a message!");
+const btnDisabled = ref(false);
 
 const fetchMessage = async () => {
 	try {
 		const response = await axios.get("/api/test-message/");
 		message.value = response.data.message;
+		btnDisabled.value = true;
 	} catch (error) {
 		console.error("Error fetching the message:", error);
 		message.value = "Failed to load message.";

@@ -120,6 +120,9 @@ header li {
 header nav {
 	display: flex;
 }
+header nav a {
+	text-decoration: none;
+}
 header .other-links {
 	display: flex;
 }
