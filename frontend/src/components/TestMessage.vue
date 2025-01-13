@@ -11,7 +11,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
-import CustomButton from "./CustomButton.vue";
+import CustomButton from "@/components/custom/CustomButton.vue";
 
 const message = ref("Click the button to load a message!");
 const btnDisabled = ref(false);

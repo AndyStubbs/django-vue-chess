@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import CustomButton from "./CustomButton.vue";
+import CustomButton from "@/components/custom/CustomButton.vue";
 import { useFocusTrap } from "@/composables/useFocusTrap";
 const { focusTrapElement } = useFocusTrap();
 const props = defineProps({

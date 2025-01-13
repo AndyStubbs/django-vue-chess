@@ -42,22 +42,25 @@
 		</footer>
 
 		<!-- Modals -->
-		<BasicModal
+		<CustomModal
 			v-if="showAccountModal"
 			title="Login"
 			:isVisible="showAccountModal"
 			@close="closeAccountModal"
-		/>
+		>
+			<LoginRegister />
+		</CustomModal>
 	</div>
 </template>
 
 <script setup>
 import { ref, watchEffect } from "vue";
-import BasicModal from "@/components/BasicModal.vue";
+import CustomModal from "@/components/custom/CustomModal.vue";
 import AccountIcon from "@/components/icons/AccountIcon.vue";
 import LightmodeIcon from "@/components/icons/LightmodeIcon.vue";
 import DarkmodeIcon from "@/components/icons/DarkmodeIcon.vue";
-import CustomButton from "@/components/CustomButton.vue";
+import CustomButton from "@/components/custom/CustomButton.vue";
+import LoginRegister from "./components/LoginRegister.vue";
 
 // Modals
 const showAccountModal = ref(false);
