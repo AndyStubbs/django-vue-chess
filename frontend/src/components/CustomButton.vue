@@ -19,6 +19,7 @@ const className = computed(() => `btn-${props.variant}`);
 	padding: 5px 10px;
 	border: 1px solid var(--btn-border-color-1);
 	border-radius: 5px;
+	transition-duration: 0.35s;
 }
 .btn-1:hover {
 	background-color: var(--btn-hover-bg-color-1, pink);
@@ -33,7 +34,15 @@ const className = computed(() => `btn-${props.variant}`);
 	border: none;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
-	border-radius: 5px;
+	border-radius: 3px;
 	font-family: var(--font-body);
+	transition-duration: 0.35s;
+}
+.btn-icon:hover {
+	opacity: 0.8;
+	transform: scale(1.1);
+}
+.btn-icon:disabled {
+	opacity: 0.35;
 }
 </style>

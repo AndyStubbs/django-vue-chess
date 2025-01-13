@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button @click="showModal = true">Open Modal</button>
+		<CustomButton @click="showModal = true" variant="1">Open Modal</CustomButton>
 		<BasicModal
 			v-bind:isVisible="showModal"
 			title="Welcome to the Modal"
@@ -8,7 +8,7 @@
 		>
 			<p>This is the modal body content!</p>
 			<template #footer>
-				<button @click="showModal = false">Close</button>
+				<CustomButton @click="showModal = false" variant="1">Close</CustomButton>
 			</template>
 		</BasicModal>
 	</div>
@@ -16,6 +16,8 @@
 
 <script setup>
 import BasicModal from "@/components/BasicModal.vue";
+import CustomButton from "./CustomButton.vue";
+
 import { ref } from "vue";
 
 const showModal = ref(false);

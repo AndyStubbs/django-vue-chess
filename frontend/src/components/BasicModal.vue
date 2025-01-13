@@ -8,7 +8,9 @@
 		<div class="modal-content" @click.stop ref="focusTrapElement">
 			<div class="modal-header">
 				<h3>{{ title }}</h3>
-				<button class="close-button" @click="closeModal">x</button>
+				<CustomButton class="close-button" @click="closeModal" variant="icon"
+					>&times;</CustomButton
+				>
 			</div>
 			<div class="modal-body">
 				<slot />
@@ -21,6 +23,7 @@
 </template>
 
 <script setup>
+import CustomButton from "./CustomButton.vue";
 import { useFocusTrap } from "@/composables/useFocusTrap";
 const { focusTrapElement } = useFocusTrap();
 const props = defineProps({

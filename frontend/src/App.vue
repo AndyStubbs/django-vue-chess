@@ -11,16 +11,22 @@
 			</nav>
 			<div class="other-links">
 				<div class="theme-toggle">
-					<button
+					<CustomButton
 						@click="toggleTheme"
+						variant="icon"
 						:title="theme === 'dark' ? 'Light Mode' : 'Dark Mode'"
 					>
 						<LightmodeIcon v-if="theme === 'dark'" />
 						<DarkmodeIcon v-else />
-					</button>
+					</CustomButton>
 				</div>
 				<div class="auth-links">
-					<button @click="openAccountModal"><AccountIcon /></button>
+					<CustomButton
+						@click="openAccountModal"
+						variant="icon"
+						title="Login/Register Account"
+						><AccountIcon
+					/></CustomButton>
 				</div>
 			</div>
 		</header>
@@ -51,6 +57,7 @@ import BasicModal from "@/components/BasicModal.vue";
 import AccountIcon from "@/components/icons/AccountIcon.vue";
 import LightmodeIcon from "@/components/icons/LightmodeIcon.vue";
 import DarkmodeIcon from "@/components/icons/DarkmodeIcon.vue";
+import CustomButton from "@/components/CustomButton.vue";
 
 // Modals
 const showAccountModal = ref(false);
@@ -125,22 +132,6 @@ header nav a {
 }
 header .other-links {
 	display: flex;
-}
-
-.auth-links button,
-.theme-toggle button {
-	background-color: var(--button-bg);
-	color: var(--color-white);
-	border: none;
-	padding: 0.5rem 1rem;
-	cursor: pointer;
-	border-radius: 5px;
-	font-family: var(--font-body);
-}
-
-.auth-links button:hover,
-.theme-toggle button:hover {
-	opacity: 0.8;
 }
 
 main {
