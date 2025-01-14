@@ -24,7 +24,7 @@ import CustomButton from "@/components/custom/CustomButton.vue";
 const emits = defineEmits(["register"]);
 </script>
 <style scoped>
-.login-password {
+.form-group {
 	margin: 12px 0;
 }
 .login-submit {
