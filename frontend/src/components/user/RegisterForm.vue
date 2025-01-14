@@ -36,15 +36,17 @@
 	</div>
 </template>
 <script setup>
+import axios from "axios";
 import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
 const emits = defineEmits(["login"]);
 
-const email = ref("");
-const password = ref("");
-const confirm = ref("");
+const email = ref("astubbs50@gmail.com");
+const password = ref("TestPassword1$");
+const confirm = ref("TestPassword1$");
+const disableSubmit = ref(false);
 const emailError = computed(() => {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	if (!emailRegex.test(email.value)) {
@@ -57,11 +59,26 @@ const passwordError = computed(() => usePassword.validate(password.value));
 const confirmError = computed(() =>
 	confirm.value === password.value ? "" : "Please confirm password.",
 );
-const submitRegister = () => {
+const submitRegister = async () => {
 	if (validateRegister()) {
 		console.log("Submitting Register");
+		disableSubmit.value = true;
+		try {
+			const response = await axios.post("/api/users/register/", {
+				email: email.value,
+				password: password.value,
+			});
+			console.log(response.data);
+			const message = response.data.message;
+			alert(message);
+		} catch (error) {
+			alert(error);
+		} finally {
+			disableSubmit.value = false;
+		}
 	}
 };
+
 const validateRegister = () => {
 	if (emailError.value || passwordError.value || confirmError.value) {
 		return false;
