@@ -40,7 +40,7 @@ class RegisterUserTests( TestCase ):
 	def test_register_user_duplicate_email( self ):
 		"""Test registering a user with a duplicate username"""
 		User.objects.create_user(
-			email = "test@example.com", password = "Password123!"
+			username = "testabcuser", email = "test@example.com", password = "Password123!"
 		)
 		payload = {
 			"email": "test@example.com",
@@ -52,7 +52,7 @@ class RegisterUserTests( TestCase ):
 			content_type = "application/json"
 		)
 		self.assertEqual( response.status_code, 400 )
-		self.assertEqual( response.json()[ "error" ], "Email is already taken." )
+		self.assertEqual( response.json()[ "error" ], "Email is already registered." )
 	
 	def test_register_user_invalid_email( self ):
 		"""Test registering a user with an invalid email"""
