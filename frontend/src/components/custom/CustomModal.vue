@@ -2,6 +2,7 @@
 	<div
 		v-if="isVisible"
 		class="modal-overlay"
+		@mousedown="handleMouseDown"
 		@click="handleBackdropClick"
 		@keydown.esc="closeModal"
 	>
@@ -23,7 +24,7 @@
 </template>
 
 <script setup>
-import { useSlots } from "vue";
+import { useSlots, ref } from "vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { useFocusTrap } from "@/composables/useFocusTrap";
 const slots = useSlots();
@@ -42,15 +43,19 @@ const props = defineProps({
 		default: true,
 	},
 });
-
+const isMouseDownInsideModal = ref(false);
 const emit = defineEmits(["close"]);
 
 function closeModal() {
 	emit("close");
 }
 
+function handleMouseDown(event) {
+	isMouseDownInsideModal.value = focusTrapElement.value?.contains(event.target);
+}
+
 function handleBackdropClick() {
-	if (props.closeOnBackdrop) {
+	if (props.closeOnBackdrop && !isMouseDownInsideModal.value) {
 		closeModal();
 	}
 }
