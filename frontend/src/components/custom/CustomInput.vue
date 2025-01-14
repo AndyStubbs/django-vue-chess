@@ -1,48 +1,60 @@
 <template>
 	<div class="form-group">
-		<label v-if="props.label" :for="id">{{ props.label }}</label>
-		<div class="password" v-if="type === 'password'">
-			<input :id="id" type="password" :placeholder="props.placeholder" v-bind="$attrs" />
-			<CustomButton variant="icon-b">
-				<EyeIcon />
+		<label v-if="label" :for="id">{{ label }}</label>
+		<div :class="{ password: type === 'password' }">
+			<input
+				v-model="model"
+				:id="id"
+				:type="customType"
+				v-bind="$attrs"
+				:class="{ error: isError }"
+				@change="isChanged = true"
+			/>
+			<CustomButton
+				v-if="type === 'password'"
+				type="button"
+				variant="icon-b"
+				title="Show Password"
+				@click.prevent="showPassword = !showPassword"
+			>
+				<EyeIcon :slash="showPassword" />
 			</CustomButton>
 		</div>
-		<div v-else>
-			<input :id="id" :type="props.type" :placeholder="props.placeholder" v-bind="$attrs" />
+		<div class="error-msg">
+			<span v-if="isError">{{ error }}</span>
+			&nbsp;
 		</div>
-		<div></div>
 	</div>
 </template>
 <script setup>
 import EyeIcon from "@/components/icons/EyeIcon.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
-import { useId } from "vue";
+import { useId, computed, ref } from "vue";
+const isChanged = ref(false);
+const showPassword = ref(false);
+const id = `${useId()}`;
+const model = defineModel();
 defineOptions({
 	inheritAttrs: false,
 });
 const props = defineProps({
-	required: {
-		type: Boolean,
-		default: false,
-	},
 	type: {
 		type: String,
 		default: "text",
-	},
-	name: {
-		type: String,
-		default: "input",
 	},
 	label: {
 		type: String,
 		default: "",
 	},
-	placeholder: {
+	error: {
 		type: String,
 		default: "",
 	},
 });
-const id = `${useId()}`;
+const isError = computed(() => isChanged.value && props.error);
+const customType = computed(() =>
+	props.type === "password" && showPassword.value ? "text" : props.type,
+);
 </script>
 
 <style scoped>
@@ -58,6 +70,16 @@ input {
 	box-sizing: border-box;
 	padding: 0 6px;
 }
+input:focus {
+	border-color: var(--status-success-color);
+	outline: 1px solid var(--status-success-color);
+}
+input.error {
+	border: 2px solid var(--status-error-color);
+}
+input.error:focus {
+	outline: 1px solid var(--status-error-color);
+}
 .password {
 	display: flex;
 	column-gap: 12px;
@@ -70,5 +92,8 @@ input {
 	position: relative;
 	top: -2px;
 	left: -8px;
+}
+.error-msg {
+	color: var(--status-error-color);
 }
 </style>

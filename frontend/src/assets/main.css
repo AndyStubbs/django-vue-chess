@@ -39,17 +39,7 @@ a:hover {
 
 input,
 textarea,
-select,
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active,
-input:-internal-autofill-selected,
-input[type="password"]:-webkit-autofill,
-input[type="password"]:-webkit-autofill:hover,
-input[type="password"]:-webkit-autofill:focus,
-input[type="password"]:-webkit-autofill:active,
-input[type="password"]:-internal-autofill-selected {
+select {
 	border: 1px solid var(--fg-color-1);
 	background-color: var(--input-bg-color-1) !important;
 	color: var(--fg-color-1);

@@ -1,6 +1,8 @@
 /* colors.css */
 
 :root {
+	color-scheme: light dark;
+
 	/* Fonts */
 	--font-body: "Roboto", sans-serif;
 	--font-header: "Playfair Display", serif;
@@ -74,7 +76,7 @@
 	--btn-disabled-bg-color-1: #999;
 
 	/* Status Colors */
-	--status-success-color: #3a3;
+	--status-success-color: #383;
 	--status-error-color: #e33;
 	--status-success-color-light: #091209ee;
 	--status-error-color-light: #120909ee;

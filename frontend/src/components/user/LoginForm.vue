@@ -1,12 +1,18 @@
 <template>
-	<!-- Login Form -->
 	<div>
-		<form>
-			<CustomInput label="Email" placeholder="Enter Email" required class="login-email" />
+		<form @submit.prevent="submitLogin">
 			<CustomInput
+				v-model="email"
+				:error="emailError"
+				label="Email"
+				placeholder="Enter Email"
+				required
+			/>
+			<CustomInput
+				v-model="password"
+				:error="passwordError"
 				label="Password"
 				placeholder="Enter Password"
-				class="login-password"
 				type="password"
 				required
 			/>
@@ -19,13 +25,36 @@
 	</div>
 </template>
 <script setup>
+import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
+import { usePasswordValidate } from "@/composables/usePasswordValidate";
 const emits = defineEmits(["register"]);
+const email = ref("");
+const password = ref("");
+const emailError = computed(() => {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailRegex.test(email.value)) {
+		return "Please enter a valid email address.";
+	}
+	return "";
+});
+const passwordError = computed(() => usePasswordValidate().validate(password.value));
+const submitLogin = () => {
+	if (validateLogin()) {
+		console.log("Submitting Login");
+	}
+};
+const validateLogin = () => {
+	if (emailError.value) {
+		return false;
+	}
+	return true;
+};
 </script>
 <style scoped>
 .form-group {
-	margin: 12px 0;
+	margin: 0;
 }
 .login-submit {
 	margin-top: 6px;

@@ -1,3 +1,5 @@
+"use strict";
+
 import { ref, watch, onBeforeUnmount } from "vue";
 
 export function useFocusTrap() {
@@ -57,14 +59,6 @@ export function useFocusTrap() {
 			previouslyFocusedElement.focus();
 		}
 	}
-
-	/*
-	onMounted(() => {
-		if (focusTrapElement.value) {
-			activateFocusTrap();
-		}
-	});
-	*/
 
 	watch(focusTrapElement, (newValue) => {
 		if (newValue) {
