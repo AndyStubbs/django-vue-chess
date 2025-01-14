@@ -46,7 +46,7 @@ const submitLogin = () => {
 	}
 };
 const validateLogin = () => {
-	if (emailError.value) {
+	if (emailError.value || passwordError.value) {
 		return false;
 	}
 	return true;
