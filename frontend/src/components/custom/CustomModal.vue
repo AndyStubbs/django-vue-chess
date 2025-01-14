@@ -15,7 +15,7 @@
 			<div class="modal-body">
 				<slot />
 			</div>
-			<div class="modal-footer">
+			<div v-if="slots.footer" class="modal-footer">
 				<slot name="footer" />
 			</div>
 		</div>
@@ -23,8 +23,10 @@
 </template>
 
 <script setup>
+import { useSlots } from "vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { useFocusTrap } from "@/composables/useFocusTrap";
+const slots = useSlots();
 const { focusTrapElement } = useFocusTrap();
 const props = defineProps({
 	title: {
@@ -93,10 +95,6 @@ function handleBackdropClick() {
 	font-size: 1.5rem;
 	cursor: pointer;
 	color: var(--fg-color-1);
-}
-
-.modal-body {
-	padding: 1rem 0;
 }
 
 .modal-footer {

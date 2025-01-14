@@ -1,14 +1,14 @@
 <template>
 	<div class="form-group">
 		<label v-if="props.label" :for="id">{{ props.label }}</label>
-		<div v-if="type === 'password'">
-			<input :id="id" :type="props.type" />
-			<CustomButton variant="icon">
+		<div class="password" v-if="type === 'password'">
+			<input :id="id" type="password" :placeholder="props.placeholder" />
+			<CustomButton variant="icon-b">
 				<EyeIcon />
 			</CustomButton>
 		</div>
 		<div v-else>
-			<input :id="id" :type="props.type" />
+			<input :id="id" :type="props.type" :placeholder="props.placeholder" />
 		</div>
 		<div></div>
 	</div>
@@ -34,15 +34,38 @@ const props = defineProps({
 		type: String,
 		default: "",
 	},
+	placeholder: {
+		type: String,
+		default: "",
+	},
 });
 const id = `${useId()}`;
 </script>
 
 <style scoped>
+label {
+	font-weight: bold;
+}
 .form-group {
 	width: 100%;
 }
 input {
 	width: 100%;
+	height: 38px;
+	box-sizing: border-box;
+	padding: 0 6px;
+}
+.password {
+	display: flex;
+	column-gap: 12px;
+}
+.password button {
+	width: 40px;
+	height: 38px;
+}
+.password svg {
+	position: relative;
+	top: -2px;
+	left: -8px;
 }
 </style>

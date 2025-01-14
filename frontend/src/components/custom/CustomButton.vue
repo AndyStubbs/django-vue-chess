@@ -32,7 +32,8 @@ const className = computed(() => `btn-${props.variant}`);
 	opacity: 0.8;
 }
 
-.btn-icon {
+.btn-icon,
+.btn-icon-b {
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
 	padding: 0.5rem 1rem;
@@ -41,11 +42,17 @@ const className = computed(() => `btn-${props.variant}`);
 	font-family: var(--font-body);
 	transition-duration: 0.35s;
 }
-.btn-icon:hover {
+.btn-icon:hover,
+.btn-icon-b:hover {
 	opacity: 0.8;
 	transform: scale(1.1);
 }
-.btn-icon:disabled {
+.btn-icon:disabled,
+.btn-icon-b:disabled {
 	opacity: 0.35;
+}
+
+.btn-icon-b {
+	border: 1px solid var(--btn-border-color-1);
 }
 </style>
