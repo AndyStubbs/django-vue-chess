@@ -42,8 +42,13 @@
 		</footer>
 
 		<!-- Modals -->
-		<CustomModal title="Login" :isVisible="showAccountModal" @close="closeAccountModal">
-			<LoginRegister />
+		<CustomModal
+			:title="showLoginForm ? 'Login' : 'Register'"
+			:isVisible="showAccountModal"
+			@close="closeAccountModal"
+		>
+			<LoginForm v-if="showLoginForm" @register="showLoginForm = false" />
+			<RegisterForm v-else @login="showLoginForm = true" />
 		</CustomModal>
 	</div>
 </template>
@@ -55,9 +60,10 @@ import AccountIcon from "@/components/icons/AccountIcon.vue";
 import LightmodeIcon from "@/components/icons/LightmodeIcon.vue";
 import DarkmodeIcon from "@/components/icons/DarkmodeIcon.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
-import LoginRegister from "./components/LoginRegister.vue";
+import LoginForm from "./components/user/LoginForm.vue";
+import RegisterForm from "./components/user/RegisterForm.vue";
 
-// Modals
+const showLoginForm = ref(true);
 const showAccountModal = ref(false);
 
 function openAccountModal() {
@@ -68,15 +74,12 @@ function closeAccountModal() {
 	showAccountModal.value = false;
 }
 
-// Theme Management
 const theme = ref("light");
 
-// Detect system preference on mount
 if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 	theme.value = "dark";
 }
 
-// Watch for system changes to theme preference
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
 	theme.value = e.matches ? "dark" : "light";
 	applyTheme();
@@ -87,12 +90,10 @@ function toggleTheme() {
 	applyTheme();
 }
 
-// Apply the theme to the body element
 function applyTheme() {
 	document.body.className = theme.value;
 }
 
-// Apply the theme initially and on change
 watchEffect(() => {
 	applyTheme();
 });

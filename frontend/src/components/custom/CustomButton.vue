@@ -25,7 +25,7 @@ const className = computed(() => `btn-${props.variant}`);
 	transition-duration: 0.35s;
 }
 .btn-1:hover {
-	background-color: var(--btn-hover-bg-color-1, pink);
+	background-color: var(--btn-hover-bg-color-1);
 }
 .btn-1:disabled {
 	background-color: var(--btn-disabled-bg-color-1);
@@ -33,6 +33,7 @@ const className = computed(() => `btn-${props.variant}`);
 }
 
 .btn-icon,
+.btn-link,
 .btn-icon-b {
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
@@ -42,8 +43,7 @@ const className = computed(() => `btn-${props.variant}`);
 	font-family: var(--font-body);
 	transition-duration: 0.35s;
 }
-.btn-icon:hover,
-.btn-icon-b:hover {
+.btn-icon:hover {
 	opacity: 0.8;
 	transform: scale(1.1);
 }
@@ -53,6 +53,20 @@ const className = computed(() => `btn-${props.variant}`);
 }
 
 .btn-icon-b {
-	border: 1px solid var(--btn-border-color-1);
+	border: 1px solid var(--fg-color-1);
+}
+.btn-icon-b:hover {
+	background-color: var(--bg-color-2);
+	opacity: 0.8;
+}
+
+.btn-link {
+	font-family: var(--font-header);
+	font-size: medium;
+	color: var(--link-color);
+	text-decoration: underline;
+}
+.btn-link:hover {
+	color: var(--link-hover-color);
 }
 </style>

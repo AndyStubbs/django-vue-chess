@@ -14,13 +14,14 @@
 		</form>
 		<p>
 			Don't have an account?
-			<a href="#" id="toggle-to-register">Register</a>
+			<CustomButton variant="link" @click="emits('register')">Register</CustomButton>
 		</p>
 	</div>
 </template>
 <script setup>
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
+const emits = defineEmits(["register"]);
 </script>
 <style scoped>
 .login-password {

@@ -41,10 +41,6 @@
 	--status-success-color-light: #33de3308;
 	--status-error-color: #833;
 	--status-error-color-light: #fa333308;
-
-	.icon-dark {
-		display: none;
-	}
 }
 
 .dark {
@@ -82,11 +78,4 @@
 	--status-error-color: #e33;
 	--status-success-color-light: #091209ee;
 	--status-error-color-light: #120909ee;
-
-	.icon-dark {
-		display: block;
-	}
-	.icon-light {
-		display: none;
-	}
 }

@@ -2,13 +2,13 @@
 	<div class="form-group">
 		<label v-if="props.label" :for="id">{{ props.label }}</label>
 		<div class="password" v-if="type === 'password'">
-			<input :id="id" type="password" :placeholder="props.placeholder" />
+			<input :id="id" type="password" :placeholder="props.placeholder" v-bind="$attrs" />
 			<CustomButton variant="icon-b">
 				<EyeIcon />
 			</CustomButton>
 		</div>
 		<div v-else>
-			<input :id="id" :type="props.type" :placeholder="props.placeholder" />
+			<input :id="id" :type="props.type" :placeholder="props.placeholder" v-bind="$attrs" />
 		</div>
 		<div></div>
 	</div>
@@ -17,6 +17,9 @@
 import EyeIcon from "@/components/icons/EyeIcon.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { useId } from "vue";
+defineOptions({
+	inheritAttrs: false,
+});
 const props = defineProps({
 	required: {
 		type: Boolean,
