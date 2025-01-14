@@ -79,7 +79,7 @@ function handleBackdropClick() {
 	background: var(--bg-color-1);
 	padding: 1.5rem;
 	border-radius: 8px;
-	width: 90%;
+	width: 100%;
 	max-width: 500px;
 	box-shadow: 0 2px 10px var(--shadow-color-2);
 	position: relative;
@@ -105,5 +105,16 @@ function handleBackdropClick() {
 .modal-footer {
 	margin-top: 1rem;
 	text-align: right;
+}
+
+@media screen and (max-width: 500px) {
+	.modal-overlay {
+		flex-direction: column;
+		justify-content: flex-start;
+	}
+	.modal-content {
+		box-shadow: none;
+		border-radius: 0;
+	}
 }
 </style>
