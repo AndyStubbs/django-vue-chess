@@ -1,5 +1,13 @@
 import random
 import string
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
@@ -8,7 +16,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 import json
+import logging
 
+logger = logging.getLogger(__name__)
 
 def generate_random_username():
 	return "user_" + "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
@@ -72,37 +82,54 @@ def register_user(request):
 	# Return 405 for non-POST requests
 	return JsonResponse({"error": "Method not allowed."}, status=405)
 
+class CookieTokenObtainPairView(APIView):
+	permission_classes = [AllowAny]
 
-@csrf_exempt
-def login_user(request):
-	if request.method == "POST":
+	def post(self, request, *args, **kwargs):
+		# Extract email and password
+		email = request.data.get('email')
+		password = request.data.get('password')
+		
+		if not email or not password:
+			return Response( { "error": "Email and password are required." }, status = 400 )
+		
+		# Debug log
+		logger.debug( f"Attempting login with email: {email}" )
+		
 		try:
-			data = json.loads(request.body)
+			user = User.objects.get( email = email )
+		except User.DoesNotExist:
+			logger.debug( f"No user found with email: {email}" )
+			return Response( { "error": "Invalid email or password." }, status = 401 )
+		
+		# Authenticate using username (required by authenticate)
+		user = authenticate( username = user.username, password = password )
+		
+		if user is not None:
+			# Generate tokens
+			refresh = RefreshToken.for_user(user)
+			access = refresh.access_token
 
-			# Extract email and password from the request
-			email = data.get("email")
-			password = data.get("password")
+			# Set cookies
+			response = Response({"message": "Login successful"})
+			response.set_cookie(
+				settings.SIMPLE_JWT['AUTH_COOKIE'],  # Cookie name
+				access,
+				max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
+				secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+				httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+				samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+			)
+			return response
+		return Response({"error": "Invalid credentials"}, status=401)
 
-			# Validate inputs
-			if not email or not password:
-				return JsonResponse({"error": "Email and password are required."}, status=400)
+class LogoutView(APIView):
+	def post(self, request, *args, **kwargs):
+		response = Response({"message": "Logout successful"})
+		response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+		return response
 
-			# Find the username associated with the email
-			try:
-				user = User.objects.get(email=email)
-				username = user.username
-			except User.DoesNotExist:
-				return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-			# Authenticate using the username and password
-			user = authenticate(username=username, password=password)
-
-			if user is not None:
-				return JsonResponse({"message": "Login successful."}, status=200)
-			else:
-				return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-		except json.JSONDecodeError:
-			return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-	return JsonResponse({"error": "Method not allowed."}, status=405)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def protected_view(request):
+	return Response({"message": "You have access to this view."})

@@ -55,14 +55,12 @@ const submitLogin = async () => {
 				email: email.value,
 				password: password.value,
 			});
-			console.log(response.data);
 			toastStore.addToast({
 				message: response.data.message,
 				status: "success",
 				duration: 5000,
 			});
 		} catch (error) {
-			console.error(error);
 			const status = "error";
 			let message = "";
 			if (error.response && error.response.data && error.response.data.error) {

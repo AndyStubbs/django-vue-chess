@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,9 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'rest_framework',
+	'rest_framework_simplejwt.token_blacklist',
+	'corsheaders',
 	"users",
 ]
 
@@ -48,6 +52,8 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'chess_backend.urls'
@@ -96,6 +102,32 @@ AUTH_PASSWORD_VALIDATORS = [
 		'NAME': 'users.validators.CustomPasswordValidator',
 	},
 ]
+
+REST_FRAMEWORK = {
+	'DEFAULT_AUTHENTICATION_CLASSES': (
+		'rest_framework_simplejwt.authentication.JWTAuthentication',
+	),
+}
+
+SIMPLE_JWT = {
+	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+	'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+	'ROTATE_REFRESH_TOKENS': True,
+	'BLACKLIST_AFTER_ROTATION': True,
+	'AUTH_COOKIE': 'access_token',               # Name of the access token cookie
+	'AUTH_COOKIE_SECURE': False,                 # Set to True in production (HTTPS)
+	'AUTH_COOKIE_HTTP_ONLY': True,               # Ensures cookie is HTTP-only
+	'AUTH_COOKIE_PATH': '/',                     # Path where the cookie is available
+	'AUTH_COOKIE_SAMESITE': 'Lax',               # Controls cross-origin behavior
+	'AUTH_COOKIE_DOMAIN': None,                  # Set to your domain in production
+}
+
+CORS_ALLOWED_ORIGINS = [
+	"http://127.0.0.1:5173",  # Vite dev server
+	"http://localhost:5173",  # Alternate local domain
+]
+
+CORS_EXPOSE_HEADERS = ['Content-Type', 'Authorization']
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
