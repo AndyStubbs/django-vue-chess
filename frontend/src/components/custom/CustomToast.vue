@@ -46,14 +46,24 @@ const symbol = ref(SYMBOLS[props.status]);
 const showBorder = ref(true);
 const className = computed(() => (SYMBOLS[props.status] ? props.status : "info"));
 
-// Dynamic style based on index
+// Define width ranges based on the message length
+const widthRanges = [
+	125, // For very short messages
+	150, // Short messages
+	300, // Moderate messages
+	320, // Longer messages
+	360, // Very long messages
+	400, // Extremely long messages
+	460, // Max width
+];
+
 const toastStyle = computed(() => {
-	const minWidth = 200;
-	const maxWidth = 460;
-	const factor = 4;
-	const base = 150;
-	let width = base + props.message.length * factor;
-	width = Math.min(Math.max(width, minWidth), maxWidth);
+	// Determine width based on message length
+	const messageLength = props.message.length;
+	let widthIndex = Math.floor(messageLength / 10); // Each range covers 10 characters
+	widthIndex = Math.min(widthIndex, widthRanges.length - 1); // Cap at max index
+
+	const width = widthRanges[widthIndex];
 	return {
 		width: `${width}px`,
 		top: `${props.index * (80 + props.offset) + 60}px`,
