@@ -27,11 +27,11 @@
 	</div>
 </template>
 <script setup>
-import axios from "axios";
 import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
+import { useEmailValidate } from "@/composables/useEmailValidate";
 import { useToastStore } from "@/stores/toast.js";
 import { useAuthStore } from "@/stores/auth";
 
@@ -41,41 +41,21 @@ const emits = defineEmits(["register"]);
 const email = ref("astubbs50@gmail.com");
 const password = ref("TestPassword1$");
 const disableSubmit = ref(false);
-const emailError = computed(() => {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	if (!emailRegex.test(email.value)) {
-		return "Please enter a valid email address.";
-	}
-	return "";
-});
+const emailError = computed(() => useEmailValidate().validate(email.value));
 const passwordError = computed(() => usePasswordValidate().validate(password.value));
 const submitLogin = async () => {
-	if (validateLogin()) {
+	if (validateLoginForm()) {
 		disableSubmit.value = true;
 		try {
-			const response = await axios.post("/api/users/login/", {
-				email: email.value,
-				password: password.value,
-			});
-			await authStore.checkAuth();
-			if (!authStore.isAuthenticated) {
-				throw { message: "Login failed" };
-			}
+			authStore.login(email.value, password.value);
 			toastStore.addToast({
-				message: response.data.message,
+				message: "You are now logged in. Have fun!",
 				status: "success",
 				duration: 5000,
 			});
 		} catch (error) {
 			const status = "error";
-			let message = "";
-			if (error.response && error.response.data && error.response.data.error) {
-				message = error.response.data.error;
-			} else if (error.message) {
-				message = error.message;
-			} else {
-				console.error(error);
-			}
+			const message = error.message;
 			if (message !== "") {
 				toastStore.addToast({ message, status });
 			}
@@ -84,7 +64,7 @@ const submitLogin = async () => {
 		}
 	}
 };
-const validateLogin = () => {
+const validateLoginForm = () => {
 	if (emailError.value || passwordError.value) {
 		return false;
 	}
