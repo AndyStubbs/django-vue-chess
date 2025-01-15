@@ -19,8 +19,8 @@ export const useAuthStore = defineStore("auth", {
 				this.email = response.data.email;
 			} catch {
 				this.isAuthenticated = false;
-				this.username = "No one";
-				this.email = "nope@example.com";
+				this.username = "";
+				this.email = "";
 			}
 		},
 	},

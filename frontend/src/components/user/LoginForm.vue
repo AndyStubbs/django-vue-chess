@@ -66,11 +66,6 @@ const submitLogin = async () => {
 				status: "success",
 				duration: 5000,
 			});
-			toastStore.addToast({
-				message: "Welcome " + authStore.username,
-				status: "info",
-				duration: 5000,
-			});
 		} catch (error) {
 			const status = "error";
 			let message = "";
