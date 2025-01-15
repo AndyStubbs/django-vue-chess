@@ -64,7 +64,6 @@ const confirmError = computed(() =>
 );
 const submitRegister = async () => {
 	if (validateRegister()) {
-		console.log("Submitting Register");
 		disableSubmit.value = true;
 		try {
 			const response = await axios.post("/api/users/register/", {

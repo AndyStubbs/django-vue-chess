@@ -60,8 +60,8 @@ const widthRanges = [
 const toastStyle = computed(() => {
 	// Determine width based on message length
 	const messageLength = props.message.length;
-	let widthIndex = Math.floor(messageLength / 10); // Each range covers 10 characters
-	widthIndex = Math.min(widthIndex, widthRanges.length - 1); // Cap at max index
+	let widthIndex = Math.floor(messageLength / 10);
+	widthIndex = Math.min(widthIndex, widthRanges.length - 1);
 
 	const width = widthRanges[widthIndex];
 	return {
