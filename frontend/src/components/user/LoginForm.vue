@@ -41,8 +41,10 @@ const emits = defineEmits(["register"]);
 const email = ref("astubbs50@gmail.com");
 const password = ref("TestPassword1$");
 const disableSubmit = ref(false);
-const emailError = computed(() => useEmailValidate().validate(email.value));
-const passwordError = computed(() => usePasswordValidate().validate(password.value));
+const emailValidate = useEmailValidate();
+const emailError = computed(() => emailValidate.validate(email.value));
+const passwordValidate = usePasswordValidate();
+const passwordError = computed(() => passwordValidate.validate(password.value));
 const submitLogin = async () => {
 	if (validateLoginForm()) {
 		disableSubmit.value = true;
