@@ -42,14 +42,17 @@
 		</footer>
 
 		<!-- Modals -->
-		<CustomModal
-			:title="showLoginForm ? 'Login' : 'Register'"
-			:isVisible="showAccountModal"
-			@close="closeAccountModal"
-		>
-			<LoginForm v-if="showLoginForm" @register="showLoginForm = false" />
-			<RegisterForm v-else @login="showLoginForm = true" />
-		</CustomModal>
+		<Teleport to="body">
+			<CustomModal
+				:title="showLoginForm ? 'Login' : 'Register'"
+				:isVisible="showAccountModal"
+				@close="closeAccountModal"
+			>
+				<LoginForm v-if="showLoginForm" @register="showLoginForm = false" />
+				<RegisterForm v-else @login="showLoginForm = true" />
+			</CustomModal>
+		</Teleport>
+		<ToastContainer />
 	</div>
 </template>
 
@@ -62,6 +65,7 @@ import DarkmodeIcon from "@/components/icons/DarkmodeIcon.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import LoginForm from "./components/user/LoginForm.vue";
 import RegisterForm from "./components/user/RegisterForm.vue";
+import ToastContainer from "./components/custom/ToastContainer.vue";
 
 const showLoginForm = ref(true);
 const showAccountModal = ref(false);

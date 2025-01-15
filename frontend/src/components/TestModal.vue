@@ -1,14 +1,20 @@
 <template>
 	<div>
 		<CustomButton @click="showModal = true" variant="1">Open Modal</CustomButton>
-		<CustomModal :isVisible="showModal" title="Welcome to the Modal" @close="showModal = false">
-			<p>This is the modal body content!</p>
-			<CustomInput></CustomInput>
-			<CustomButton>Click Me</CustomButton>
-			<template #footer>
-				<CustomButton @click="showModal = false" variant="1">Close</CustomButton>
-			</template>
-		</CustomModal>
+		<Teleport to="body">
+			<CustomModal
+				:isVisible="showModal"
+				title="Welcome to the Modal"
+				@close="showModal = false"
+			>
+				<p>This is the modal body content!</p>
+				<CustomInput></CustomInput>
+				<CustomButton>Click Me</CustomButton>
+				<template #footer>
+					<CustomButton @click="showModal = false" variant="1">Close</CustomButton>
+				</template>
+			</CustomModal>
+		</Teleport>
 	</div>
 </template>
 

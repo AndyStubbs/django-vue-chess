@@ -40,17 +40,20 @@
 
 	/* Status Colors */
 	--status-success-color: #383;
-	--status-success-color-light: #33de3308;
 	--status-error-color: #833;
-	--status-error-color-light: #fa333308;
+	--status-info-color: #c1c1c1;
+	--status-warn-color: #c17108;
 }
 
 .dark {
 	/* Dark mode colors */
 	--bg-color-1: #1c1c1c;
-	--fg-color-1: #aaa;
-	--fg-color-2: #888;
 	--bg-color-2: #222;
+	--bg-color-3: #333;
+	--bg-color-4: #555;
+	--fg-color-1: #fff;
+	--fg-color-2: #aaa;
+	--fg-color-3: #888;
 	--input-bg-color-1: #1e1e1e;
 	--shadow-color-1: rgba(255, 255, 255, 0.1);
 	--shadow-color-2: rgba(255, 255, 255, 0.25);
@@ -78,6 +81,6 @@
 	/* Status Colors */
 	--status-success-color: #383;
 	--status-error-color: #e33;
-	--status-success-color-light: #091209ee;
-	--status-error-color-light: #120909ee;
+	--status-info-color: #585958;
+	--status-warn-color: #c17108;
 }

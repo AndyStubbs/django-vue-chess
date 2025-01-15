@@ -33,6 +33,14 @@
 			Already have an account?
 			<CustomButton variant="link" @click="emits('login')">Login</CustomButton>
 		</p>
+		<Teleport to="body">
+			<CustomModal :is-visible="alertMessage !== ''" @close="alertMessage = ''">
+				{{ alertMessage }}
+				<template #footer>
+					<CustomButton @click="alertMessage = ''">Close</CustomButton>
+				</template>
+			</CustomModal>
+		</Teleport>
 	</div>
 </template>
 <script setup>
@@ -47,6 +55,7 @@ const email = ref("astubbs50@gmail.com");
 const password = ref("TestPassword1$");
 const confirm = ref("TestPassword1$");
 const disableSubmit = ref(false);
+const alertMessage = ref("");
 const emailError = computed(() => {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	if (!emailRegex.test(email.value)) {
@@ -69,10 +78,10 @@ const submitRegister = async () => {
 				password: password.value,
 			});
 			console.log(response.data);
-			const message = response.data.message;
-			alert(message);
+			alertMessage.value = response.data.message;
 		} catch (error) {
-			alert(error);
+			console.error(error);
+			alertMessage.value = error.message;
 		} finally {
 			disableSubmit.value = false;
 		}

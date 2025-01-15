@@ -8,7 +8,7 @@
 	>
 		<div class="modal-content" @click.stop ref="focusTrapElement">
 			<div class="modal-header">
-				<h3>{{ title }}</h3>
+				<h3 v-if="title">{{ title }}</h3>
 				<CustomButton class="close-button" @click="closeModal" variant="icon"
 					>&times;</CustomButton
 				>
@@ -32,7 +32,7 @@ const { focusTrapElement } = useFocusTrap();
 const props = defineProps({
 	title: {
 		type: String,
-		default: "Modal Title",
+		default: "",
 	},
 	isVisible: {
 		type: Boolean,

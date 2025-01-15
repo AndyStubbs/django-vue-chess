@@ -22,16 +22,27 @@
 			Don't have an account?
 			<CustomButton variant="link" @click="emits('register')">Register</CustomButton>
 		</p>
+		{{ alertMessage }}
+		<Teleport to="body">
+			<CustomModal :is-visible="alertMessage !== ''" @close="closeAlert">
+				{{ alertMessage }}
+				<template #footer>
+					<CustomButton @click="closeAlert">Close</CustomButton>
+				</template>
+			</CustomModal>
+		</Teleport>
 	</div>
 </template>
 <script setup>
 import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
+import CustomModal from "../custom/CustomModal.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
 const emits = defineEmits(["register"]);
 const email = ref("");
 const password = ref("");
+const alertMessage = ref("Test");
 const emailError = computed(() => {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	if (!emailRegex.test(email.value)) {
@@ -40,6 +51,9 @@ const emailError = computed(() => {
 	return "";
 });
 const passwordError = computed(() => usePasswordValidate().validate(password.value));
+const closeAlert = () => {
+	alertMessage.value = "";
+};
 const submitLogin = () => {
 	if (validateLogin()) {
 		console.log("Submitting Login");
