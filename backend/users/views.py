@@ -55,7 +55,9 @@ def register_user(request):
 			# Create the user
 			user = User.objects.create_user(username=username, email=email, password=password)
 
-			return JsonResponse({"message": "User registered successfully."}, status=201)
+			return JsonResponse({
+				"message": f"Successfully registered account for {email}."
+			}, status=201)
 
 		except json.JSONDecodeError:
 			return JsonResponse({"error": "Invalid JSON data."}, status=400)

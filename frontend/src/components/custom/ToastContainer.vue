@@ -7,10 +7,9 @@
 				:status="toast.status"
 				:index="index"
 				:duration="toast.duration"
+				:message="toast.message"
 				:onDismiss="() => store.removeToast(toast.id)"
-			>
-				{{ toast.message }}
-			</CustomToast>
+			/>
 		</TransitionGroup>
 	</div>
 </template>
@@ -26,7 +25,7 @@ const store = useToastStore();
 	position: fixed;
 	top: 160px;
 	right: 0px;
-	z-index: 1000;
+	z-index: 2000;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;

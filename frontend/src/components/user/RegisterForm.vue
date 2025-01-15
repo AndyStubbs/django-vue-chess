@@ -33,14 +33,6 @@
 			Already have an account?
 			<CustomButton variant="link" @click="emits('login')">Login</CustomButton>
 		</p>
-		<Teleport to="body">
-			<CustomModal :is-visible="alertMessage !== ''" @close="alertMessage = ''">
-				{{ alertMessage }}
-				<template #footer>
-					<CustomButton @click="alertMessage = ''">Close</CustomButton>
-				</template>
-			</CustomModal>
-		</Teleport>
 	</div>
 </template>
 <script setup>
@@ -49,13 +41,15 @@ import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
+import { useToastStore } from "@/stores/toast.js";
+
+const toastStore = useToastStore();
 const emits = defineEmits(["login"]);
 
 const email = ref("astubbs50@gmail.com");
 const password = ref("TestPassword1$");
 const confirm = ref("TestPassword1$");
 const disableSubmit = ref(false);
-const alertMessage = ref("");
 const emailError = computed(() => {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	if (!emailRegex.test(email.value)) {
@@ -78,10 +72,21 @@ const submitRegister = async () => {
 				password: password.value,
 			});
 			console.log(response.data);
-			alertMessage.value = response.data.message;
+			toastStore.addToast({
+				message: response.data.message,
+				status: "success",
+				duration: 70000,
+			});
 		} catch (error) {
 			console.error(error);
-			alertMessage.value = error.message;
+			const status = "error";
+			let message = "";
+			if (error.response && error.response.data && error.response.data.error) {
+				message = error.response.data.error;
+			} else {
+				message = error.message;
+			}
+			toastStore.addToast({ message, status });
 		} finally {
 			disableSubmit.value = false;
 		}

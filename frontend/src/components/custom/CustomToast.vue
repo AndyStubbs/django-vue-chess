@@ -2,7 +2,7 @@
 	<div class="toast" :class="className" :style="toastStyle">
 		<div class="contents">
 			<div class="symbol">{{ symbol }}</div>
-			<div><slot /></div>
+			<div class="message" :title="message">{{ message }}</div>
 			<CustomButton variant="icon" @click="dismiss"> &times; </CustomButton>
 		</div>
 		<Transition name="border">
@@ -20,6 +20,7 @@ const props = defineProps({
 		type: String,
 		default: "info",
 	},
+	message: String,
 	index: {
 		type: Number,
 		required: true,
@@ -46,9 +47,18 @@ const showBorder = ref(true);
 const className = computed(() => (SYMBOLS[props.status] ? props.status : "info"));
 
 // Dynamic style based on index
-const toastStyle = computed(() => ({
-	top: `${props.index * (80 + props.offset) + 60}px`,
-}));
+const toastStyle = computed(() => {
+	const minWidth = 200;
+	const maxWidth = 460;
+	const factor = 4;
+	const base = 150;
+	let width = base + props.message.length * factor;
+	width = Math.min(Math.max(width, minWidth), maxWidth);
+	return {
+		width: `${width}px`,
+		top: `${props.index * (80 + props.offset) + 60}px`,
+	};
+});
 
 // Border style for dynamic duration
 const borderStyle = computed(() => ({
@@ -73,6 +83,7 @@ function dismiss() {
 	width: 300px;
 	height: 80px;
 	border-radius: 16px;
+	box-shadow: 2px 2px 4px 2px #00000055;
 	font-size: 16px;
 	color: white;
 	text-shadow: 1px 1px 4px black;
@@ -96,6 +107,11 @@ function dismiss() {
 	opacity: 0;
 	transform: translateX(-100%);
 }
+.toast .message {
+	max-height: 65px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 .symbol {
 	border-radius: 32px;
 	min-width: 32px;
@@ -103,7 +119,6 @@ function dismiss() {
 	line-height: 32px;
 	text-align: center;
 	font-size: 24px;
-	background-color: #ffffff33;
 	font-weight: bold;
 	text-shadow: 1px 1px 4px black;
 }
@@ -115,6 +130,7 @@ function dismiss() {
 }
 .info .symbol {
 	color: white;
+	background-color: #ffffff33;
 }
 .info .border {
 	background-color: rgba(245, 245, 245, 0.75);
@@ -128,6 +144,7 @@ function dismiss() {
 }
 .warn .symbol {
 	color: gold;
+	background-color: #ffffff33;
 }
 .warn .border {
 	background-color: rgba(255, 217, 0, 0.875);
@@ -140,7 +157,8 @@ function dismiss() {
 	color: rgb(177, 255, 177);
 }
 .success .symbol {
-	color: rgb(15, 118, 15);
+	color: rgb(4, 98, 4);
+	background-color: #9ccda7a3;
 }
 .success .border {
 	background-color: rgba(54, 245, 54, 0.75);

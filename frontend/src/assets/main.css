@@ -13,7 +13,7 @@ body {
 
 body {
 	background-color: var(--bg-color-1);
-	color: var(--fg-color-1);
+	color: var(--fg-color-2);
 	margin: 0;
 	line-height: 1.6;
 	transition:

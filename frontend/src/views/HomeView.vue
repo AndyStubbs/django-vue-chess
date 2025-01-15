@@ -18,7 +18,9 @@ const STATUS = ["success", "info", "warn", "error"];
 function toast() {
 	const status = STATUS[Math.floor(Math.random() * STATUS.length)];
 	toastStore.addToast({
-		message: `This is a ${status} message!`,
+		//message: `This is a ${status} message!`,
+		message:
+			"The text-overflow property in CSS is used to specify how overflowed content that is not displayed should be signaled to the user. It can be clipped, display an ellipsis (...), or display a custom string",
 		status: status,
 		duration: 50000,
 	});
