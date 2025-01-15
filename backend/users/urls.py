@@ -12,4 +12,5 @@ urlpatterns = [
 	path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 	path('login/', CookieTokenObtainPairView.as_view(), name='cookie_token_obtain_pair'),
 	path('logout/', LogoutView.as_view(), name='logout'),
+	path("auth-check/", views.check_auth, name="check-auth"),
 ]

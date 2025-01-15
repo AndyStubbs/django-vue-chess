@@ -129,7 +129,7 @@ class LogoutView(APIView):
 		response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
 		return response
 
-@api_view(["GET"])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def protected_view(request):
-	return Response({"message": "You have access to this view."})
+def check_auth(request):
+	return Response({"is_authenticated": True, "username": request.user.username})
