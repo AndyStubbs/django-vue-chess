@@ -132,4 +132,8 @@ class LogoutView(APIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def check_auth(request):
-	return Response({"is_authenticated": True, "username": request.user.username})
+	return Response({
+		"is_authenticated": True,
+		"username": request.user.username,
+		"email": request.user.email
+	})

@@ -2,13 +2,13 @@
 	<div class="toast-container">
 		<TransitionGroup name="toast" tag="div">
 			<CustomToast
-				v-for="(toast, index) in store.toasts"
+				v-for="(toast, index) in toastStore.toasts"
 				:key="toast.id"
 				:status="toast.status"
 				:index="index"
 				:duration="toast.duration"
 				:message="toast.message"
-				:onDismiss="() => store.removeToast(toast.id)"
+				:onDismiss="() => toastStore.removeToast(toast.id)"
 			/>
 		</TransitionGroup>
 	</div>
@@ -17,7 +17,7 @@
 <script setup>
 import { useToastStore } from "@/stores/toast";
 import CustomToast from "@/components/custom/CustomToast.vue";
-const store = useToastStore();
+const toastStore = useToastStore();
 </script>
 
 <style scoped>

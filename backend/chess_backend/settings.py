@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': (
-		'rest_framework_simplejwt.authentication.JWTAuthentication',
+		'users.custom_auth.cookie_jwt_auth.CookieJWTAuthentication',
 	),
 }
 
@@ -122,6 +122,7 @@ SIMPLE_JWT = {
 	'AUTH_COOKIE_DOMAIN': None,                  # Set to your domain in production
 }
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
 	"http://127.0.0.1:5173",  # Vite dev server
 	"http://localhost:5173",  # Alternate local domain

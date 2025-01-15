@@ -33,7 +33,9 @@ import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
 import { useToastStore } from "@/stores/toast.js";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
 const toastStore = useToastStore();
 const emits = defineEmits(["register"]);
 const email = ref("astubbs50@gmail.com");
@@ -55,9 +57,18 @@ const submitLogin = async () => {
 				email: email.value,
 				password: password.value,
 			});
+			await authStore.checkAuth();
+			if (!authStore.isAuthenticated) {
+				throw { message: "Login failed" };
+			}
 			toastStore.addToast({
 				message: response.data.message,
 				status: "success",
+				duration: 5000,
+			});
+			toastStore.addToast({
+				message: "Welcome " + authStore.username,
+				status: "info",
 				duration: 5000,
 			});
 		} catch (error) {
@@ -65,10 +76,14 @@ const submitLogin = async () => {
 			let message = "";
 			if (error.response && error.response.data && error.response.data.error) {
 				message = error.response.data.error;
-			} else {
+			} else if (error.message) {
 				message = error.message;
+			} else {
+				console.error(error);
 			}
-			toastStore.addToast({ message, status });
+			if (message !== "") {
+				toastStore.addToast({ message, status });
+			}
 		} finally {
 			disableSubmit.value = false;
 		}

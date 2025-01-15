@@ -57,7 +57,8 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, onMounted } from "vue";
+import { useAuthStore } from "./stores/auth.js";
 import CustomModal from "@/components/custom/CustomModal.vue";
 import AccountIcon from "@/components/icons/AccountIcon.vue";
 import LightmodeIcon from "@/components/icons/LightmodeIcon.vue";
@@ -67,8 +68,13 @@ import LoginForm from "./components/user/LoginForm.vue";
 import RegisterForm from "./components/user/RegisterForm.vue";
 import ToastContainer from "./components/custom/ToastContainer.vue";
 
+const authStore = useAuthStore();
 const showLoginForm = ref(true);
 const showAccountModal = ref(false);
+
+onMounted(() => {
+	authStore.checkAuth();
+});
 
 function openAccountModal() {
 	showAccountModal.value = true;
