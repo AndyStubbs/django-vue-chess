@@ -22,6 +22,8 @@ const MESSAGES = [
 	"The text-overflow property in CSS is used to specify how overflowed content that is not displayed should be",
 	"The text-overflow property in CSS is used to specify how overflowed content",
 	"The text-overflow property",
+	"The text-overflow",
+	"The text-",
 	"hi",
 ];
 function toast() {

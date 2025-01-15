@@ -27,7 +27,9 @@
 				type="password"
 				required
 			/>
-			<CustomButton type="submit" class="register-submit">Register</CustomButton>
+			<CustomButton type="submit" class="register-submit" :disabled="disableSubmit"
+				>Register</CustomButton
+			>
 		</form>
 		<p>
 			Already have an account?
@@ -74,7 +76,7 @@ const submitRegister = async () => {
 			toastStore.addToast({
 				message: response.data.message,
 				status: "success",
-				duration: 70000,
+				duration: 5000,
 			});
 		} catch (error) {
 			console.error(error);

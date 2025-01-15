@@ -6,7 +6,9 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
 import json
+
 
 def generate_random_username():
 	return "user_" + "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
@@ -68,4 +70,39 @@ def register_user(request):
 			)
 
 	# Return 405 for non-POST requests
+	return JsonResponse({"error": "Method not allowed."}, status=405)
+
+
+@csrf_exempt
+def login_user(request):
+	if request.method == "POST":
+		try:
+			data = json.loads(request.body)
+
+			# Extract email and password from the request
+			email = data.get("email")
+			password = data.get("password")
+
+			# Validate inputs
+			if not email or not password:
+				return JsonResponse({"error": "Email and password are required."}, status=400)
+
+			# Find the username associated with the email
+			try:
+				user = User.objects.get(email=email)
+				username = user.username
+			except User.DoesNotExist:
+				return JsonResponse({"error": "Invalid email or password."}, status=401)
+
+			# Authenticate using the username and password
+			user = authenticate(username=username, password=password)
+
+			if user is not None:
+				return JsonResponse({"message": "Login successful."}, status=200)
+			else:
+				return JsonResponse({"error": "Invalid email or password."}, status=401)
+
+		except json.JSONDecodeError:
+			return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
 	return JsonResponse({"error": "Method not allowed."}, status=405)

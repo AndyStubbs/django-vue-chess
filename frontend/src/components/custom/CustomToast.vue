@@ -47,15 +47,7 @@ const showBorder = ref(true);
 const className = computed(() => (SYMBOLS[props.status] ? props.status : "info"));
 
 // Define width ranges based on the message length
-const widthRanges = [
-	125, // For very short messages
-	150, // Short messages
-	300, // Moderate messages
-	320, // Longer messages
-	360, // Very long messages
-	400, // Extremely long messages
-	460, // Max width
-];
+const widthRanges = [200, 250, 300, 325, 350, 380, 420, 460];
 
 const toastStyle = computed(() => {
 	// Determine width based on message length

@@ -16,7 +16,9 @@
 				type="password"
 				required
 			/>
-			<CustomButton type="submit" class="login-submit">Login</CustomButton>
+			<CustomButton type="submit" class="login-submit" :disabled="disableSubmit"
+				>Login</CustomButton
+			>
 		</form>
 		<p>
 			Don't have an account?
@@ -25,13 +27,18 @@
 	</div>
 </template>
 <script setup>
+import axios from "axios";
 import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
+import { useToastStore } from "@/stores/toast.js";
+
+const toastStore = useToastStore();
 const emits = defineEmits(["register"]);
-const email = ref("");
-const password = ref("");
+const email = ref("astubbs50@gmail.com");
+const password = ref("TestPassword1$");
+const disableSubmit = ref(false);
 const emailError = computed(() => {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	if (!emailRegex.test(email.value)) {
@@ -40,9 +47,33 @@ const emailError = computed(() => {
 	return "";
 });
 const passwordError = computed(() => usePasswordValidate().validate(password.value));
-const submitLogin = () => {
+const submitLogin = async () => {
 	if (validateLogin()) {
-		console.log("Submitting Login");
+		disableSubmit.value = true;
+		try {
+			const response = await axios.post("/api/users/login/", {
+				email: email.value,
+				password: password.value,
+			});
+			console.log(response.data);
+			toastStore.addToast({
+				message: response.data.message,
+				status: "success",
+				duration: 5000,
+			});
+		} catch (error) {
+			console.error(error);
+			const status = "error";
+			let message = "";
+			if (error.response && error.response.data && error.response.data.error) {
+				message = error.response.data.error;
+			} else {
+				message = error.message;
+			}
+			toastStore.addToast({ message, status });
+		} finally {
+			disableSubmit.value = false;
+		}
 	}
 };
 const validateLogin = () => {

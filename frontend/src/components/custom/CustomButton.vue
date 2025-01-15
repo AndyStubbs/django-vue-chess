@@ -23,6 +23,7 @@ const className = computed(() => `btn-${props.variant}`);
 	border: 1px solid var(--btn-border-color-1);
 	border-radius: 5px;
 	transition-duration: 0.35s;
+	min-width: 80px;
 }
 .btn-1:hover {
 	background-color: var(--btn-hover-bg-color-1);
@@ -30,6 +31,7 @@ const className = computed(() => `btn-${props.variant}`);
 .btn-1:disabled {
 	background-color: var(--btn-disabled-bg-color-1);
 	opacity: 0.8;
+	cursor: not-allowed;
 }
 
 .btn-icon,
