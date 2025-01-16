@@ -37,7 +37,7 @@ import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 const toastStore = useToastStore();
-const emits = defineEmits(["register"]);
+const emits = defineEmits(["register", "close"]);
 const email = ref("astubbs50@gmail.com");
 const password = ref("TestPassword1$");
 const disableSubmit = ref(false);
@@ -49,17 +49,18 @@ const submitLogin = async () => {
 	if (validateLoginForm()) {
 		disableSubmit.value = true;
 		try {
-			authStore.login(email.value, password.value);
+			await authStore.login(email.value, password.value);
 			toastStore.addToast({
 				message: "You are now logged in. Have fun!",
 				status: "success",
 				duration: 5000,
 			});
+			emits("close");
 		} catch (error) {
 			const status = "error";
 			const message = error.message;
 			if (message !== "") {
-				toastStore.addToast({ message, status });
+				toastStore.addToast({ message, status, duration: 15000 });
 			}
 		} finally {
 			disableSubmit.value = false;

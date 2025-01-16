@@ -1,12 +1,19 @@
 import random
 import string
+import json
+import logging
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -15,8 +22,6 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
-import json
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -114,11 +119,19 @@ class CookieTokenObtainPairView(APIView):
 			response = Response({"message": "Login successful"})
 			response.set_cookie(
 				settings.SIMPLE_JWT['AUTH_COOKIE'],  # Cookie name
-				access,
+				value=str(access),
 				max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
 				secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
 				httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
 				samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+			)
+			response.set_cookie(
+				key=settings.SIMPLE_JWT['REFRESH_COOKIE'],
+				value=str(refresh),
+				httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+				secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+				samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+				max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
 			)
 			return response
 		return Response({"error": "Invalid credentials"}, status=401)
@@ -132,8 +145,90 @@ class LogoutView(APIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def check_auth(request):
-	return Response({
-		"is_authenticated": True,
-		"username": request.user.username,
-		"email": request.user.email
-	})
+	try:
+		# Extract the token from the request's cookies (or Authorization header if not using cookies)
+		token = request.COOKIES.get('access_token')  # Replace 'access_token' with your cookie name if different
+		if not token:
+			raise InvalidToken("No access token found in cookies.")
+
+		# Validate and decode the token
+		validated_token = JWTAuthentication().get_validated_token(token)
+
+		# Extract expiration time (exp) from the token
+		token_exp = validated_token.get("exp")
+
+		return Response({
+			"is_authenticated": True,
+			"username": request.user.username,
+			"email": request.user.email,
+			"token_exp": token_exp
+		})
+
+	except InvalidToken:
+		return Response({
+			"is_authenticated": False,
+			"error": "Invalid or expired token."
+		}, status=401)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user(request):
+	# Get the authenticated user
+	user = request.user
+
+	try:
+		logger.info(f"User {user.username} deleted their account.")
+
+		# Delete the user's account
+		user.delete()
+		response = Response({"message": "Account deleted successfully."}, status=200)
+		response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
+		response.delete_cookie(settings.SIMPLE_JWT['REFRESH_COOKIE'])
+
+		# Return a success response
+		return response
+
+	except Exception as e:
+		# Handle any errors
+		return Response({"error": f"An error occurred: {str(e)}"}, status=500)
+
+class CookieTokenRefreshView(TokenRefreshView):
+	def post(self, request, *args, **kwargs):
+		# Attempt to extract the refresh token from the cookie
+		refresh_token = request.COOKIES.get(settings.SIMPLE_JWT['REFRESH_COOKIE'])
+		if not refresh_token:
+			logger.warning("Refresh token not found in cookies.")
+			return Response(
+				{"error": "Refresh token not found in cookies."},
+				status=status.HTTP_400_BAD_REQUEST
+			)
+
+		# Replace the request data with the refresh token
+		request.data['refresh'] = refresh_token
+
+		try:
+			response = super().post(request, *args, **kwargs)
+		except InvalidToken:
+			return Response(
+				{"error": "Invalid or expired refresh token."},
+				status=status.HTTP_401_UNAUTHORIZED
+			)
+
+		# Set the new refresh token in the cookie
+		if 'refresh' in response.data:
+			response.set_cookie(
+				settings.SIMPLE_JWT['REFRESH_COOKIE'],
+				response.data['refresh'],
+				httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+				secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+				samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+				max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
+			)
+			del response.data['refresh']
+
+		# Securtiy headers
+		response["X-Content-Type-Options"] = "nosniff"
+		response["X-Frame-Options"] = "DENY"
+
+		return response

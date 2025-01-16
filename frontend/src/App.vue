@@ -7,6 +7,11 @@
 					<li><router-link to="/">Chess App</router-link></li>
 					<li><router-link to="/play">Play</router-link></li>
 					<li><router-link to="/about">About</router-link></li>
+					<li>
+						<router-link to="/account" v-if="authStore.isAuthenticated"
+							>Account</router-link
+						>
+					</li>
 				</ul>
 			</nav>
 			<div class="other-links">
@@ -48,8 +53,12 @@
 				:isVisible="showAccountModal"
 				@close="closeAccountModal"
 			>
-				<LoginForm v-if="showLoginForm" @register="showLoginForm = false" />
-				<RegisterForm v-else @login="showLoginForm = true" />
+				<LoginForm
+					v-if="showLoginForm"
+					@register="showLoginForm = false"
+					@close="closeAccountModal"
+				/>
+				<RegisterForm v-else @login="showLoginForm = true" @close="closeAccountModal" />
 			</CustomModal>
 		</Teleport>
 		<ToastContainer />

@@ -5,12 +5,16 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+// Buffer time (in milliseconds) before token expiration
+const REFRESH_BUFFER = 30 * 1000;
+
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
 		isAuthenticated: false,
 		isLoggedIn: false,
 		username: "",
 		email: "",
+		tokenRefreshTimer: null,
 	}),
 	actions: {
 		// Check if the user is authenticated
@@ -25,6 +29,11 @@ export const useAuthStore = defineStore("auth", {
 				this.isAuthenticated = response.data.is_authenticated;
 				this.username = response.data.username;
 				this.email = response.data.email;
+
+				// Schedule token refresh if authenticated
+				if (this.isAuthenticated) {
+					this.scheduleTokenRefresh(response.data.token_exp);
+				}
 			} catch {
 				this.logout();
 			}
@@ -55,11 +64,58 @@ export const useAuthStore = defineStore("auth", {
 							email: this.email,
 						}),
 					);
+
+					// Schedule token refresh
+					this.scheduleTokenRefresh(authCheck.data.token_exp);
 				} else {
 					throw new Error("Authentication verification failed.");
 				}
 			} catch (error) {
-				throw new Error(error.response?.data?.error || "Login failed. Please try again.");
+				throw new Error(
+					error.response?.data?.error ||
+						"Login failed. Please double-check your email and password and try again.",
+				);
+			}
+		},
+
+		// Refresh access token
+		async refreshAccessToken() {
+			try {
+				const response = await axios.post(
+					"/api/users/token/refresh/",
+					{},
+					{
+						withCredentials: true,
+					},
+				);
+
+				// Schedule the next refresh
+				this.scheduleTokenRefresh(response.data.token_exp);
+			} catch {
+				this.logout();
+				throw new Error("Session expired. Please log in again.");
+			}
+		},
+
+		// Schedule token refresh
+		scheduleTokenRefresh(expirationTime) {
+			// Calculate remaining time until token expiration
+			const currentTime = Math.floor(Date.now() / 1000);
+			const expiresIn = expirationTime - currentTime;
+
+			if (expiresIn > 0) {
+				const refreshTime = expiresIn * 1000 - REFRESH_BUFFER;
+
+				// Clear any existing timer
+				if (this.tokenRefreshTimer) {
+					clearTimeout(this.tokenRefreshTimer);
+				}
+
+				// Schedule the token refresh
+				this.tokenRefreshTimer = setTimeout(async () => {
+					await this.refreshAccessToken();
+				}, refreshTime);
+				console.log(`Refresh scheduled for ${refreshTime}`);
 			}
 		},
 
@@ -69,7 +125,7 @@ export const useAuthStore = defineStore("auth", {
 			this.isLoggedIn = false;
 			this.username = "";
 
-			// Persist to localStorage
+			// Clear storage and timers
 			localStorage.setItem(
 				"auth",
 				JSON.stringify({
@@ -77,14 +133,38 @@ export const useAuthStore = defineStore("auth", {
 					email: this.email,
 				}),
 			);
+			if (this.tokenRefreshTimer) {
+				clearTimeout(this.tokenRefreshTimer);
+			}
+
+			window.location.href = "/";
+		},
+
+		// Delete a user's account
+		async deleteAccount() {
+			try {
+				await axios.delete("/api/users/delete-user/", {
+					withCredentials: true,
+				});
+
+				// Clear state and storage after deletion
+				this.logout();
+			} catch (error) {
+				throw new Error(error.response?.data?.error || "Failed to delete account.");
+			}
 		},
 
 		// Restore auth state from localStorage
-		restoreAuth() {
+		async restoreAuth() {
 			const authData = JSON.parse(localStorage.getItem("auth"));
 			if (authData) {
 				this.isLoggedIn = authData.isLoggedIn || false;
 				this.email = authData.email || "";
+			}
+
+			// Verify authentication and schedule refresh if logged in
+			if (this.isLoggedIn) {
+				await this.checkAuth();
 			}
 		},
 	},

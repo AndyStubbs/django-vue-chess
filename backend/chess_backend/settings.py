@@ -110,11 +110,13 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+	#'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+	'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
 	'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 	'ROTATE_REFRESH_TOKENS': True,
 	'BLACKLIST_AFTER_ROTATION': True,
 	'AUTH_COOKIE': 'access_token',               # Name of the access token cookie
+	'REFRESH_COOKIE': 'refresh_token',           # Refresh token cookie name
 	'AUTH_COOKIE_SECURE': False,                 # Set to True in production (HTTPS)
 	'AUTH_COOKIE_HTTP_ONLY': True,               # Ensures cookie is HTTP-only
 	'AUTH_COOKIE_PATH': '/',                     # Path where the cookie is available
