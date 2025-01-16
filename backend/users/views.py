@@ -2,6 +2,7 @@ import random
 import string
 import json
 import logging
+from datetime import datetime, timezone
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -13,6 +14,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import AccessToken
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -146,8 +148,8 @@ class LogoutView(APIView):
 @permission_classes([IsAuthenticated])
 def check_auth(request):
 	try:
-		# Extract the token from the request's cookies (or Authorization header if not using cookies)
-		token = request.COOKIES.get('access_token')  # Replace 'access_token' with your cookie name if different
+		# Extract the token from the request's cookies
+		token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE'])
 		if not token:
 			raise InvalidToken("No access token found in cookies.")
 
@@ -209,10 +211,28 @@ class CookieTokenRefreshView(TokenRefreshView):
 
 		try:
 			response = super().post(request, *args, **kwargs)
-		except InvalidToken:
+		except InvalidToken as e:
+			logger.warning(f"Invalid or expired refresh token: {str(e)}")
 			return Response(
 				{"error": "Invalid or expired refresh token."},
 				status=status.HTTP_401_UNAUTHORIZED
+			)
+
+		# Extract the new access token and its expiration time
+		access_token = response.data.get('access')
+		if access_token:
+			token = AccessToken(access_token)
+			exp_time = datetime.fromtimestamp(token.get("exp"), tz=timezone.utc)
+			response.data['token_exp'] = exp_time.isoformat()
+
+			# Set the new access token in the cookie
+			response.set_cookie(
+				settings.SIMPLE_JWT['AUTH_COOKIE'],
+				access_token,
+				httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+				secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+				samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
+				max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
 			)
 
 		# Set the new refresh token in the cookie
@@ -227,7 +247,7 @@ class CookieTokenRefreshView(TokenRefreshView):
 			)
 			del response.data['refresh']
 
-		# Securtiy headers
+		# Security headers
 		response["X-Content-Type-Options"] = "nosniff"
 		response["X-Frame-Options"] = "DENY"
 

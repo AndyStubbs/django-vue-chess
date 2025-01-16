@@ -88,7 +88,6 @@ export const useAuthStore = defineStore("auth", {
 						withCredentials: true,
 					},
 				);
-
 				// Schedule the next refresh
 				this.scheduleTokenRefresh(response.data.token_exp);
 			} catch {
@@ -104,7 +103,7 @@ export const useAuthStore = defineStore("auth", {
 			const expiresIn = expirationTime - currentTime;
 
 			if (expiresIn > 0) {
-				const refreshTime = expiresIn * 1000 - REFRESH_BUFFER;
+				let refreshTime = Math.max(expiresIn * 1000 - REFRESH_BUFFER, 1000);
 
 				// Clear any existing timer
 				if (this.tokenRefreshTimer) {
@@ -116,6 +115,10 @@ export const useAuthStore = defineStore("auth", {
 					await this.refreshAccessToken();
 				}, refreshTime);
 				console.log(`Refresh scheduled for ${refreshTime}`);
+			} else {
+				console.log("Already expired");
+				console.log(expirationTime);
+				console.log(expiresIn);
 			}
 		},
 
@@ -164,6 +167,7 @@ export const useAuthStore = defineStore("auth", {
 
 			// Verify authentication and schedule refresh if logged in
 			if (this.isLoggedIn) {
+				await this.refreshAccessToken();
 				await this.checkAuth();
 			}
 		},

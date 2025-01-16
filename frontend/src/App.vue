@@ -81,10 +81,6 @@ const authStore = useAuthStore();
 const showLoginForm = ref(true);
 const showAccountModal = ref(false);
 
-onMounted(() => {
-	authStore.checkAuth();
-});
-
 function openAccountModal() {
 	showAccountModal.value = true;
 }
