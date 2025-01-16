@@ -10,7 +10,7 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
+import api from "@/utils/api";
 import CustomButton from "@/components/custom/CustomButton.vue";
 
 const message = ref("Click the button to load a message!");
@@ -18,7 +18,7 @@ const btnDisabled = ref(false);
 
 const fetchMessage = async () => {
 	try {
-		const response = await axios.get("/api/test-message/");
+		const response = await api.get("/api/test-message/");
 		message.value = response.data.message;
 		btnDisabled.value = true;
 	} catch (error) {

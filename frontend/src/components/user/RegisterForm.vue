@@ -38,7 +38,7 @@
 	</div>
 </template>
 <script setup>
-import axios from "axios";
+import api from "@/utils/api";
 import { ref, computed } from "vue";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
@@ -68,7 +68,7 @@ const submitRegister = async () => {
 	if (validateRegister()) {
 		disableSubmit.value = true;
 		try {
-			const response = await axios.post("/api/users/register/", {
+			const response = await api.post("/api/users/register/", {
 				email: email.value,
 				password: password.value,
 			});

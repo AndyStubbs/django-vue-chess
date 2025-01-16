@@ -3,10 +3,17 @@
 "use strict";
 
 import { defineStore } from "pinia";
-import axios from "axios";
+import api from "@/utils/api";
 
 // Buffer time (in milliseconds) before token expiration
 const REFRESH_BUFFER = 30 * 1000;
+const URLS = {
+	checkAuth: "/api/users/check-auth/",
+	refresh: "/api/users/token/refresh/",
+	login: "/api/users/login/",
+	delete: "/api/users/delete-user/",
+	logout: "/api/users/logout/",
+};
 
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
@@ -23,7 +30,7 @@ export const useAuthStore = defineStore("auth", {
 				return;
 			}
 			try {
-				const response = await axios.get("/api/users/auth-check/", {
+				const response = await api.get(URLS.checkAuth, {
 					withCredentials: true,
 				});
 				this.isAuthenticated = response.data.is_authenticated;
@@ -43,10 +50,10 @@ export const useAuthStore = defineStore("auth", {
 		async login(email, password) {
 			try {
 				// Login and get initial response
-				await axios.post("/api/users/login/", { email, password });
+				await api.post(URLS.login, { email, password });
 
 				// Verify authentication after login
-				const authCheck = await axios.get("/api/users/auth-check/", {
+				const authCheck = await api.get("/api/users/check-auth/", {
 					withCredentials: true,
 				});
 
@@ -81,8 +88,8 @@ export const useAuthStore = defineStore("auth", {
 		// Refresh access token
 		async refreshAccessToken() {
 			try {
-				const response = await axios.post(
-					"/api/users/token/refresh/",
+				const response = await api.post(
+					URLS.refresh,
 					{},
 					{
 						withCredentials: true,
@@ -123,7 +130,20 @@ export const useAuthStore = defineStore("auth", {
 		},
 
 		// Log the user out
-		logout() {
+		async logout(isDelete = false) {
+			if (!isDelete) {
+				try {
+					await api.post(
+						URLS.logout,
+						{},
+						{
+							withCredentials: true,
+						},
+					);
+				} catch (error) {
+					console.error(error);
+				}
+			}
 			this.isAuthenticated = false;
 			this.isLoggedIn = false;
 			this.username = "";
@@ -146,12 +166,10 @@ export const useAuthStore = defineStore("auth", {
 		// Delete a user's account
 		async deleteAccount() {
 			try {
-				await axios.delete("/api/users/delete-user/", {
+				await api.delete(URLS.delete, {
 					withCredentials: true,
 				});
-
-				// Clear state and storage after deletion
-				this.logout();
+				this.logout(true);
 			} catch (error) {
 				throw new Error(error.response?.data?.error || "Failed to delete account.");
 			}

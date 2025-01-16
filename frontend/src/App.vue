@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect, onMounted } from "vue";
+import { ref, watchEffect } from "vue";
 import { useAuthStore } from "./stores/auth.js";
 import CustomModal from "@/components/custom/CustomModal.vue";
 import AccountIcon from "@/components/icons/AccountIcon.vue";

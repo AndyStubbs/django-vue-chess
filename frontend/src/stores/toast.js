@@ -1,3 +1,7 @@
+// stores/toast.js
+
+"use strict";
+
 import { defineStore } from "pinia";
 
 export const useToastStore = defineStore("toast", {
