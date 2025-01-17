@@ -12,13 +12,19 @@ body {
 }
 
 body {
-	background-color: var(--bg-color-1);
+	background-image: url(chess-bg.jpg);
+	background-position: center bottom;
+	background-repeat: no-repeat;
 	color: var(--fg-color-2);
 	margin: 0;
 	line-height: 1.6;
 	transition:
 		background-color 0.3s ease,
 		color 0.3s ease;
+}
+
+#app {
+	background-color: var(--bg-color-1);
 }
 
 header {

@@ -8,7 +8,7 @@
 	--font-header: "Playfair Display", serif;
 
 	/* Light mode colors */
-	--bg-color-1: #f4f4f4;
+	--bg-color-1: #f4f4f490;
 	--bg-color-2: #e8e8e8;
 	--bg-color-3: #ddd;
 	--bg-color-4: #eee;
@@ -63,7 +63,7 @@
 
 .dark {
 	/* Dark mode colors */
-	--bg-color-1: #1c1c1c;
+	--bg-color-1: #1c1c1c90;
 	--bg-color-2: #222;
 	--bg-color-3: #333;
 	--bg-color-4: #555;
