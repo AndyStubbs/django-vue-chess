@@ -6,7 +6,6 @@
 				<ul class="nav-links">
 					<li><router-link to="/">Chess App</router-link></li>
 					<li><router-link to="/play">Play</router-link></li>
-					<li><router-link to="/about">About</router-link></li>
 					<li>
 						<router-link to="/account" v-if="authStore.isAuthenticated"
 							>Account</router-link

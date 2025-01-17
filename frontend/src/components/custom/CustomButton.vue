@@ -9,38 +9,68 @@ const props = defineProps({
 		type: String,
 		default: "1",
 	},
-	toggle: Boolean,
 });
 const className = computed(() => `btn-${props.variant}`);
 </script>
 
 <style scoped>
-button[selected] {
-	border: 3px solid var(--btn-border-color-1);
+button {
+	cursor: pointer;
+	padding: 5px 10px;
+	border-radius: 5px;
+	transition-duration: 0.35s;
+	min-width: 80px;
 }
+button:disabled {
+	opacity: 0.8;
+	cursor: not-allowed;
+}
+
+/* Button 1 */
 .btn-1 {
 	color: var(--btn-fg-color-1);
 	background-color: var(--btn-bg-color-1);
 	border-color: var(--btn-border-color-1);
-	cursor: pointer;
-	padding: 5px 10px;
 	border: 1px solid var(--btn-border-color-1);
-	border-radius: 5px;
-	transition-duration: 0.35s;
-	min-width: 80px;
 }
 .btn-1:hover {
 	background-color: var(--btn-hover-bg-color-1);
 }
 .btn-1:disabled {
 	background-color: var(--btn-disabled-bg-color-1);
-	opacity: 0.8;
-	cursor: not-allowed;
 }
 
-.btn-icon,
-.btn-link,
-.btn-icon-b {
+/* Button 2 */
+.btn-2 {
+	color: var(--btn-fg-color-2);
+	background-color: var(--btn-bg-color-2);
+	border-color: var(--btn-border-color-2);
+	border: 1px solid var(--btn-border-color-2);
+}
+.btn-2:hover {
+	background-color: var(--btn-hover-bg-color-2);
+}
+.btn-2:disabled {
+	background-color: var(--btn-disabled-bg-color-2);
+}
+
+/* Button 3 */
+.btn-3 {
+	color: var(--btn-fg-color-3);
+	background-color: var(--btn-bg-color-3);
+	border-color: var(--btn-border-color-3);
+	border: 1px solid var(--btn-border-color-3);
+}
+.btn-3:hover {
+	background-color: var(--btn-hover-bg-color-3);
+}
+.btn-3:disabled {
+	background-color: var(--btn-disabled-bg-color-3);
+}
+
+button.btn-icon,
+button.btn-link,
+button.btn-icon-b {
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
 	padding: 0.5rem 1rem;
@@ -48,25 +78,26 @@ button[selected] {
 	border-radius: 3px;
 	font-family: var(--font-body);
 	transition-duration: 0.35s;
+	min-width: auto;
 }
-.btn-icon:hover {
+button.btn-icon:hover {
 	opacity: 0.8;
 	transform: scale(1.1);
 }
-.btn-icon:disabled,
-.btn-icon-b:disabled {
+button.btn-icon:disabled,
+button.btn-icon-b:disabled {
 	opacity: 0.35;
 }
 
-.btn-icon-b {
+button.btn-icon-b {
 	border: 1px solid var(--fg-color-1);
 }
-.btn-icon-b:hover {
+button.btn-icon-b:hover {
 	background-color: var(--bg-color-2);
 	opacity: 0.8;
 }
 
-.btn-link {
+button.btn-link {
 	font-family: var(--font-header);
 	font-size: medium;
 	color: var(--link-color);

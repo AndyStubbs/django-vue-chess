@@ -26,4 +26,5 @@ urlpatterns = [
 	path("admin/", admin.site.urls),
 	path("api/test-message/", test_message, name="test-message"),
 	path("api/users/", include("users.urls")),
+	path("api/game/", include("game.urls")),
 ]

@@ -26,10 +26,26 @@
 
 	/* Button 1 */
 	--btn-fg-color-1: #000000;
-	--btn-bg-color-1: #f1f1f1;
-	--btn-border-color-1: #ccc;
-	--btn-hover-bg-color-1: #ddd;
-	--btn-disabled-bg-color-1: #777;
+	--btn-bg-color-1: #ccc;
+	--btn-border-color-1: #999;
+	--btn-hover-bg-color-1: #aaa;
+	--btn-disabled-bg-color-1: #bbb;
+
+	/* Button 2 */
+	--btn-fg-color-2: #000;
+	--btn-bg-color-2: #eee;
+	--btn-border-color-2: #363;
+	--btn-hover-bg-color-2: #ddd;
+	--btn-disabled-bg-color-2: #777;
+
+	/* Button 3 */
+	--btn-fg-color-3: #fff;
+	--btn-bg-color-3: #363;
+	--btn-border-color-3: #363;
+	--btn-hover-bg-color-3: #383;
+	--btn-disabled-bg-color-3: #777;
+
+	--active-item-color: #3b3;
 
 	/* Scrollbar Colors */
 	--track-bg-color: #ddd;
@@ -77,6 +93,20 @@
 	--btn-border-color-1: #777777;
 	--btn-hover-bg-color-1: #373636;
 	--btn-disabled-bg-color-1: #999;
+
+	/* Button 2 */
+	--btn-fg-color-2: #fff;
+	--btn-bg-color-2: #000;
+	--btn-border-color-2: #363;
+	--btn-hover-bg-color-2: #151515;
+	--btn-disabled-bg-color-2: #777;
+
+	/* Button 3 */
+	--btn-fg-color-3: #fff;
+	--btn-bg-color-3: #363;
+	--btn-border-color-3: #363;
+	--btn-hover-bg-color-3: #383;
+	--btn-disabled-bg-color-3: #777;
 
 	/* Status Colors */
 	--status-success-color: #383;

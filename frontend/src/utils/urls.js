@@ -4,6 +4,7 @@ const URLS = {
 	// Public routes
 	LOGIN: `${API_BASE}/users/login/`,
 	REGISTER: `${API_BASE}/users/register/`,
+	GAME_OPTIONS: `${API_BASE}/game/options/`,
 
 	// Auth routes
 	LOGOUT: `${API_BASE}/users/logout/`,
