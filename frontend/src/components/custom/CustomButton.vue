@@ -9,11 +9,15 @@ const props = defineProps({
 		type: String,
 		default: "1",
 	},
+	toggle: Boolean,
 });
 const className = computed(() => `btn-${props.variant}`);
 </script>
 
 <style scoped>
+button[selected] {
+	border: 3px solid var(--btn-border-color-1);
+}
 .btn-1 {
 	color: var(--btn-fg-color-1);
 	background-color: var(--btn-bg-color-1);
