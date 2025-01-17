@@ -38,8 +38,9 @@
 	</div>
 </template>
 <script setup>
-import api from "@/utils/api";
 import { ref, computed } from "vue";
+import api from "@/utils/api";
+import URLS from "@/utils/urls";
 import CustomInput from "@/components/custom/CustomInput.vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { usePasswordValidate } from "@/composables/usePasswordValidate";
@@ -68,11 +69,10 @@ const submitRegister = async () => {
 	if (validateRegister()) {
 		disableSubmit.value = true;
 		try {
-			const response = await api.post("/api/users/register/", {
+			const response = await api.post(URLS.REGISTER, {
 				email: email.value,
 				password: password.value,
 			});
-			console.log(response.data);
 			toastStore.addToast({
 				message: response.data.message,
 				status: "success",

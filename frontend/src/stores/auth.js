@@ -3,17 +3,12 @@
 "use strict";
 
 import { defineStore } from "pinia";
+import authApi from "@/utils/authApi";
 import api from "@/utils/api";
+import URLS from "@/utils/urls";
 
 // Buffer time (in milliseconds) before token expiration
 const REFRESH_BUFFER = 30 * 1000;
-const URLS = {
-	checkAuth: "/api/users/check-auth/",
-	refresh: "/api/users/token/refresh/",
-	login: "/api/users/login/",
-	delete: "/api/users/delete-user/",
-	logout: "/api/users/logout/",
-};
 
 export const useAuthStore = defineStore("auth", {
 	state: () => ({
@@ -30,9 +25,7 @@ export const useAuthStore = defineStore("auth", {
 				return;
 			}
 			try {
-				const response = await api.get(URLS.checkAuth, {
-					withCredentials: true,
-				});
+				const response = await authApi.get(URLS.CHECK_AUTH);
 				this.isAuthenticated = response.data.is_authenticated;
 				this.username = response.data.username;
 				this.email = response.data.email;
@@ -50,10 +43,10 @@ export const useAuthStore = defineStore("auth", {
 		async login(email, password) {
 			try {
 				// Login and get initial response
-				await api.post(URLS.login, { email, password });
+				await api.post(URLS.LOGIN, { email, password });
 
 				// Verify authentication after login
-				const authCheck = await api.get("/api/users/check-auth/", {
+				const authCheck = await authApi.get("/api/users/check-auth/", {
 					withCredentials: true,
 				});
 
@@ -63,7 +56,7 @@ export const useAuthStore = defineStore("auth", {
 					this.username = authCheck.data.username;
 					this.email = email;
 
-					// Persist to localStorage
+					// Save to localStorage
 					localStorage.setItem(
 						"auth",
 						JSON.stringify({
@@ -72,7 +65,6 @@ export const useAuthStore = defineStore("auth", {
 						}),
 					);
 
-					// Schedule token refresh
 					this.scheduleTokenRefresh(authCheck.data.token_exp);
 				} else {
 					throw new Error("Authentication verification failed.");
@@ -88,14 +80,7 @@ export const useAuthStore = defineStore("auth", {
 		// Refresh access token
 		async refreshAccessToken() {
 			try {
-				const response = await api.post(
-					URLS.refresh,
-					{},
-					{
-						withCredentials: true,
-					},
-				);
-				// Schedule the next refresh
+				const response = await authApi.post(URLS.REFRESH, {});
 				this.scheduleTokenRefresh(response.data.token_exp);
 			} catch {
 				this.logout();
@@ -133,13 +118,7 @@ export const useAuthStore = defineStore("auth", {
 		async logout(isDelete = false) {
 			if (!isDelete) {
 				try {
-					await api.post(
-						URLS.logout,
-						{},
-						{
-							withCredentials: true,
-						},
-					);
+					await authApi.post(URLS.LOGOUT, {});
 				} catch (error) {
 					console.error(error);
 				}
@@ -166,9 +145,7 @@ export const useAuthStore = defineStore("auth", {
 		// Delete a user's account
 		async deleteAccount() {
 			try {
-				await api.delete(URLS.delete, {
-					withCredentials: true,
-				});
+				await authApi.delete(URLS.DELETE_USER);
 				this.logout(true);
 			} catch (error) {
 				throw new Error(error.response?.data?.error || "Failed to delete account.");
