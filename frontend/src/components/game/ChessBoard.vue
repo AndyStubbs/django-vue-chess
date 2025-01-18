@@ -7,39 +7,20 @@
 				class="chess-square"
 				:class="[getSquareColor(rowIndex, colIndex)]"
 			>
-				<img v-if="square?.type" :src="getPiece(square)" width="50" height="50" />
+				<ChessPiece v-if="square?.type" :square="square"></ChessPiece>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-const PIECES = {
-	P: "/images/chess/pawn-w.svg", // White Pawn
-	p: "/images/chess/pawn-b.svg", // Black Pawn
-	N: "/images/chess/knight-w.svg", // White Knight
-	n: "/images/chess/knight-b.svg", // Black Knight
-	B: "/images/chess/bishop-w.svg", // White Bishop
-	b: "/images/chess/bishop-b.svg", // Black Bishop
-	R: "/images/chess/rook-w.svg", // White Rook
-	r: "/images/chess/rook-b.svg", // Black Rook
-	Q: "/images/chess/queen-w.svg", // White Queen
-	q: "/images/chess/queen-b.svg", // Black Queen
-	K: "/images/chess/king-w.svg", // White King
-	k: "/images/chess/king-b.svg", // Black King
-};
+import ChessPiece from "./ChessPiece.vue";
 defineProps({
 	board: Array,
 });
 const squareSize = 80;
 const getSquareColor = (rowIndex, colIndex) => {
 	return (rowIndex + colIndex) % 2 === 0 ? "white" : "black";
-};
-const getPiece = (square) => {
-	if (square.color === "w") {
-		return PIECES[square.type.toUpperCase()];
-	}
-	return PIECES[square.type];
 };
 </script>
 
@@ -50,6 +31,7 @@ const getPiece = (square) => {
 	max-width: 100%;
 	max-height: 100%;
 	margin: auto;
+	user-select: none;
 }
 .chess-row {
 	display: grid;
@@ -63,10 +45,6 @@ const getPiece = (square) => {
 	font-size: 18px;
 	width: var(--square-size);
 	height: var(--square-size);
-}
-.chess-square img {
-	width: 100%;
-	height: 100%;
 }
 .chess-square.white {
 	background-color: #f0d9b5;
