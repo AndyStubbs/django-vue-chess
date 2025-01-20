@@ -50,22 +50,21 @@ const transition = ref("0");
 let hoverElement = null;
 
 const mousedown = () => {
-	emits("pieceselected", props.square);
 	isDragging.value = true;
 	const moves = gameStore.getValidMoves(props.square.square);
 	gameStore.clearMarks();
 	moves.forEach((move) => {
 		gameStore.addMark(gameStore.getKeyFromSquare(move.to), "move-mark");
 	});
-	transition.value = 0;
-	console.log(moves);
+	transition.value = "";
+	emits("pieceselected", props.square);
 };
 const mouseup = () => {
-	emits("piecereleased", props.square);
 	isDragging.value = false;
 	transition.value = "0.25s";
 	x.value = 0;
 	y.value = 0;
+	emits("piecereleased", props.square);
 };
 window.addEventListener("mousemove", (e) => {
 	if (isDragging.value) {
@@ -78,11 +77,11 @@ window.addEventListener("mousemove", (e) => {
 		const elementsOver = document.elementsFromPoint(mousePosX.value, mousePosY.value);
 		elementsOver.forEach((el) => {
 			if (el.classList.contains("chess-square")) {
-				if (hoverElement) {
-					hoverElement.style.border = "";
+				if (hoverElement !== el) {
+					console.log(props.square.key);
+					gameStore.addHovered(props.square.key);
 				}
 				hoverElement = el;
-				hoverElement.style.border = "6px inset #ffffffaa";
 			}
 		});
 	}

@@ -6,7 +6,7 @@ import { shallowRef } from "vue";
 import { defineStore } from "pinia";
 import { Chess } from "chess.js";
 
-function mapBoard(board, marks) {
+function mapBoard(board, marks, hovered) {
 	return board.map((row, rowIndex) => {
 		return row.map((cell, colIndex) => {
 			const bColor = (rowIndex + colIndex) % 2 === 0 ? "white" : "black";
@@ -27,6 +27,10 @@ function mapBoard(board, marks) {
 			} else {
 				cell.marked = "";
 			}
+			if (hovered === cell.key) {
+				cell.hovered = "hovered";
+			}
+
 			return cell;
 		});
 	});
@@ -50,13 +54,14 @@ export const useGameStore = defineStore("game", () => {
 	const chess = new Chess();
 	const board = shallowRef([]);
 	const marks = new Map();
+	let hovered = null;
 
 	const initGame = () => {
 		resetGame();
 	};
 
 	const updateBoard = () => {
-		board.value = mapBoard(chess.board(), marks);
+		board.value = mapBoard(chess.board(), marks, hovered);
 	};
 
 	const makeMove = (from, to) => {
@@ -96,6 +101,11 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
+	const addHovered = (key) => {
+		hovered = key;
+		updateBoard();
+	};
+
 	const clearMarks = () => {
 		marks.clear();
 	};
@@ -111,5 +121,6 @@ export const useGameStore = defineStore("game", () => {
 		addMark,
 		clearMarks,
 		getKeyFromSquare,
+		addHovered,
 	};
 });
