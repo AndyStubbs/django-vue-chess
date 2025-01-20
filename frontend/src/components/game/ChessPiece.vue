@@ -21,7 +21,6 @@ import { ref } from "vue";
 import { useGameStore } from "@/stores/game";
 
 const gameStore = useGameStore();
-const emits = defineEmits(["pieceselected", "piecereleased"]);
 const props = defineProps({
 	square: Object,
 });
@@ -48,23 +47,31 @@ const y = ref(0);
 const transition = ref("0");
 
 let hoverElement = null;
+let moves = null;
 
 const mousedown = () => {
 	isDragging.value = true;
-	const moves = gameStore.getValidMoves(props.square.square);
+	moves = gameStore.getValidMoves(props.square.square);
 	gameStore.clearMarks();
 	moves.forEach((move) => {
-		gameStore.addMark(gameStore.getKeyFromSquare(move.to), "move-mark");
+		gameStore.addMark(move.to, "move-mark");
 	});
 	transition.value = "";
-	emits("pieceselected", props.square);
+	gameStore.addMark(props.square.square, "reset-mark");
 };
 const mouseup = () => {
 	isDragging.value = false;
 	transition.value = "0.25s";
 	x.value = 0;
 	y.value = 0;
-	emits("piecereleased", props.square);
+	const moveSquare = hoverElement.dataset.square;
+	if (moveSquare !== "") {
+		for (const move of moves) {
+			if (move.to === moveSquare) {
+				gameStore.makeMove(move);
+			}
+		}
+	}
 };
 window.addEventListener("mousemove", (e) => {
 	if (isDragging.value) {
@@ -76,12 +83,9 @@ window.addEventListener("mousemove", (e) => {
 		// Get the hover square
 		const elementsOver = document.elementsFromPoint(mousePosX.value, mousePosY.value);
 		elementsOver.forEach((el) => {
-			if (el.classList.contains("chess-square")) {
-				if (hoverElement !== el) {
-					console.log(props.square.key);
-					gameStore.addHovered(props.square.key);
-				}
+			if (el.classList.contains("chess-square") && hoverElement !== el) {
 				hoverElement = el;
+				gameStore.addHovered(hoverElement.dataset.square);
 			}
 		});
 	}

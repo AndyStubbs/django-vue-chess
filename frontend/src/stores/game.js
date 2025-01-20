@@ -21,13 +21,12 @@ function mapBoard(board, marks, hovered) {
 				}
 			}
 			cell.bColor = bColor;
-			cell.key = getKeyFromIndices(colIndex, rowIndex);
-			if (marks.has(cell.key)) {
-				cell.marked = marks.get(cell.key);
+			if (marks.has(cell.square)) {
+				cell.marked = marks.get(cell.square);
 			} else {
 				cell.marked = "";
 			}
-			if (hovered === cell.key) {
+			if (hovered === cell.square) {
 				cell.hovered = "hovered";
 			}
 
@@ -36,18 +35,8 @@ function mapBoard(board, marks, hovered) {
 	});
 }
 
-function getKeyFromIndices(colIndex, rowIndex) {
-	return `${rowIndex}-${colIndex}`;
-}
-
-function getKeyFromSquare(square) {
-	const col = square.charCodeAt(0) - "a".charCodeAt(0);
-	const row = 8 - parseInt(square.charAt(1));
-	return `${row}-${col}`;
-}
-
 function getSquareFromIndices(colIndex, rowIndex) {
-	return `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${rowIndex}`;
+	return `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${8 - rowIndex}`;
 }
 
 export const useGameStore = defineStore("game", () => {
@@ -64,12 +53,17 @@ export const useGameStore = defineStore("game", () => {
 		board.value = mapBoard(chess.board(), marks, hovered);
 	};
 
-	const makeMove = (from, to) => {
-		const move = chess.move({ from, to });
-		if (move) {
+	const makeMove = (move) => {
+		try {
+			chess.move(move);
+			clearMarks();
+			clearHovered();
 			updateBoard();
+			endTurn();
+			return true;
+		} catch {
+			return false;
 		}
-		return move;
 	};
 
 	const makeRandomMove = () => {
@@ -81,9 +75,26 @@ export const useGameStore = defineStore("game", () => {
 			const move = moves[Math.floor(Math.random() * moves.length)];
 			chess.move(move);
 			updateBoard();
+			endTurn();
 			return true;
 		}
 		return false;
+	};
+
+	const endTurn = () => {
+		if (chess.isGameOver()) {
+			if (chess.isStalemate()) {
+				alert("Stalemate");
+			} else {
+				if (chess.turn() === "b") {
+					alert("White Wins!");
+				} else {
+					alert("Black Wins");
+				}
+			}
+		} else if (chess.turn() === "b") {
+			makeRandomMove();
+		}
 	};
 
 	const getValidMoves = (square) => {
@@ -96,18 +107,23 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
-	const addMark = (key, value) => {
-		marks.set(key, value);
-		updateBoard();
-	};
-
-	const addHovered = (key) => {
-		hovered = key;
+	const addMark = (square, value) => {
+		marks.set(square, value);
 		updateBoard();
 	};
 
 	const clearMarks = () => {
 		marks.clear();
+	};
+
+	const addHovered = (square) => {
+		hovered = square;
+		updateBoard();
+	};
+
+	const clearHovered = () => {
+		hovered = null;
+		updateBoard();
 	};
 
 	return {
@@ -120,7 +136,7 @@ export const useGameStore = defineStore("game", () => {
 		resetGame,
 		addMark,
 		clearMarks,
-		getKeyFromSquare,
 		addHovered,
+		clearHovered,
 	};
 });

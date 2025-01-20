@@ -2,7 +2,7 @@
 	<div>
 		<h1>Chess Game</h1>
 		<div class="board">
-			<ChessBoard :board="gameStore.board" @pieceselected="pieceselected" />
+			<ChessBoard :board="gameStore.board" />
 			<CustomButton @click="run(true)">Run</CustomButton>
 			<CustomButton @click="run(false)">Pause</CustomButton>
 		</div>
@@ -33,10 +33,6 @@ onMounted(() => {
 
 const makeRandomMove = () => {
 	gameStore.makeRandomMove();
-};
-
-const pieceselected = (square) => {
-	gameStore.addMark(square.key, "reset-mark");
 };
 </script>
 

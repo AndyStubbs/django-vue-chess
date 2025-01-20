@@ -3,18 +3,14 @@
 		<div v-for="(row, rowIndex) in board" :key="rowIndex" class="chess-row">
 			<div
 				v-for="square in row"
-				:key="square.key"
+				:key="square.square"
+				:data-square="square.square"
 				class="chess-square"
 				:class="[square.bColor, square.hovered]"
 				@mouseover="$emit('squarehover')"
 			>
 				<div v-if="square.marked" class="mark" :class="square.marked">&nbsp;</div>
-				<ChessPiece
-					v-if="square.type"
-					:square="square"
-					@pieceselected="$emit('pieceselected', square)"
-					@piecereleased="$emit('piecereleased', square)"
-				></ChessPiece>
+				<ChessPiece v-if="square.type" :square="square"></ChessPiece>
 			</div>
 		</div>
 	</div>
@@ -75,10 +71,5 @@ const squareSize = 80;
 .chess-square .move-mark {
 	border: 4px inset #0c810c;
 	background-color: #23d423;
-}
-.chess-square.hovered .move-mark {
-	border: 4px inset #fff;
-	background-color: #23d423;
-	box-shadow: 0 0 5px 7px black;
 }
 </style>
