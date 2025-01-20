@@ -6,14 +6,15 @@
 				:key="square.key"
 				class="chess-square"
 				:class="square.bColor"
+				@mouseover="$emit('squarehover')"
 			>
+				<div v-if="square.marked" class="mark" :class="square.marked">&nbsp;</div>
 				<ChessPiece
 					v-if="square?.type"
 					:square="square"
 					@pieceselected="$emit('pieceselected', square)"
 					@piecereleased="$emit('piecereleased', square)"
 				></ChessPiece>
-				<div v-if="square?.marked" class="mark">&nbsp;</div>
 			</div>
 		</div>
 	</div>
@@ -56,14 +57,20 @@ const squareSize = 80;
 	background-color: #b58863;
 }
 .chess-square .mark {
-	border: 2px inset #33aa33;
 	position: absolute;
-	background-color: #33cc33;
 	width: calc(var(--square-size) * 0.67);
 	height: calc(var(--square-size) * 0.67);
 	text-align: center;
 	border-radius: 999px;
 	opacity: 0.5;
 	transform: rotate(180deg);
+}
+.chess-square .reset-mark {
+	border: 2px inset #aaaaaa;
+	background-color: #aaccaa;
+}
+.chess-square .move-mark {
+	border: 2px inset #33aa33;
+	background-color: #33cc33;
 }
 </style>

@@ -36,7 +36,7 @@ const makeRandomMove = () => {
 };
 
 const pieceselected = (square) => {
-	gameStore.addMark(square.key);
+	gameStore.addMark(square.key, "reset-mark");
 };
 </script>
 

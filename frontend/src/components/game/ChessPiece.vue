@@ -1,16 +1,28 @@
 <template>
 	<img
-		:src="getPiece(square)"
+		:src="PIECES[square.type]"
 		width="10"
 		height="10"
 		draggable="false"
-		@mousedown="$emit('pieceselected', square)"
-		@mouseup="$emit('piecereleased', square)"
+		@mousedown="mousedown"
+		@mouseup="mouseup"
+		:style="{
+			left: `${x}px`,
+			top: `${y}px`,
+			cursor: isDragging ? 'grabbing' : 'grab',
+			zIndex: isDragging ? 1 : 0,
+			transitionDuration: transition,
+		}"
 	/>
 </template>
 
 <script setup>
-defineProps({
+import { ref } from "vue";
+import { useGameStore } from "@/stores/game";
+
+const gameStore = useGameStore();
+const emits = defineEmits(["pieceselected", "piecereleased"]);
+const props = defineProps({
 	square: Object,
 });
 const PIECES = {
@@ -27,12 +39,56 @@ const PIECES = {
 	K: "/images/chess/king-w.svg", // White King
 	k: "/images/chess/king-b.svg", // Black King
 };
-const getPiece = (square) => {
-	if (square.color === "w") {
-		return PIECES[square.type.toUpperCase()];
-	}
-	return PIECES[square.type];
+
+const isDragging = ref(false);
+const mousePosX = ref(0);
+const mousePosY = ref(0);
+const x = ref(0);
+const y = ref(0);
+const transition = ref("0");
+
+let hoverElement = null;
+
+const mousedown = () => {
+	emits("pieceselected", props.square);
+	isDragging.value = true;
+	const moves = gameStore.getValidMoves(props.square.square);
+	gameStore.clearMarks();
+	moves.forEach((move) => {
+		gameStore.addMark(gameStore.getKeyFromSquare(move.to), "move-mark");
+	});
+	transition.value = 0;
+	console.log(moves);
 };
+const mouseup = () => {
+	emits("piecereleased", props.square);
+	isDragging.value = false;
+	transition.value = "0.25s";
+	x.value = 0;
+	y.value = 0;
+};
+window.addEventListener("mousemove", (e) => {
+	if (isDragging.value) {
+		const diffX = e.clientX - mousePosX.value;
+		const diffY = e.clientY - mousePosY.value;
+		x.value += diffX;
+		y.value += diffY;
+
+		// Get the hover square
+		const elementsOver = document.elementsFromPoint(mousePosX.value, mousePosY.value);
+		elementsOver.forEach((el) => {
+			if (el.classList.contains("chess-square")) {
+				if (hoverElement) {
+					hoverElement.style.border = "";
+				}
+				hoverElement = el;
+				hoverElement.style.border = "6px inset #ffffffaa";
+			}
+		});
+	}
+	mousePosX.value = e.clientX;
+	mousePosY.value = e.clientY;
+});
 </script>
 <style scoped>
 img {

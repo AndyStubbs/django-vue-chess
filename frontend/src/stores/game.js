@@ -12,22 +12,44 @@ function mapBoard(board, marks) {
 			const bColor = (rowIndex + colIndex) % 2 === 0 ? "white" : "black";
 			if (cell === null) {
 				cell = {
-					square: `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${rowIndex}`,
+					square: getSquareFromIndices(colIndex, rowIndex),
 					type: null,
 				};
+			} else {
+				if (cell.color === "w") {
+					cell.type = cell.type.toUpperCase();
+				}
 			}
 			cell.bColor = bColor;
-			cell.key = `${rowIndex}-${colIndex}`;
-			cell.marked = marks.has(cell.key);
+			cell.key = getKeyFromIndices(colIndex, rowIndex);
+			if (marks.has(cell.key)) {
+				cell.marked = marks.get(cell.key);
+			} else {
+				cell.marked = "";
+			}
 			return cell;
 		});
 	});
 }
 
+function getKeyFromIndices(colIndex, rowIndex) {
+	return `${rowIndex}-${colIndex}`;
+}
+
+function getKeyFromSquare(square) {
+	const col = square.charCodeAt(0) - "a".charCodeAt(0);
+	const row = 8 - parseInt(square.charAt(1));
+	return `${row}-${col}`;
+}
+
+function getSquareFromIndices(colIndex, rowIndex) {
+	return `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${rowIndex}`;
+}
+
 export const useGameStore = defineStore("game", () => {
 	const chess = new Chess();
 	const board = shallowRef([]);
-	const marks = new Set();
+	const marks = new Map();
 
 	const initGame = () => {
 		resetGame();
@@ -60,7 +82,8 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const getValidMoves = (square) => {
-		return chess.moves({ square, verbose: true });
+		const moves = chess.moves({ square, verbose: true });
+		return moves;
 	};
 
 	const resetGame = () => {
@@ -68,8 +91,8 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
-	const addMark = (key) => {
-		marks.add(key);
+	const addMark = (key, value) => {
+		marks.set(key, value);
 		updateBoard();
 	};
 
@@ -87,5 +110,6 @@ export const useGameStore = defineStore("game", () => {
 		resetGame,
 		addMark,
 		clearMarks,
+		getKeyFromSquare,
 	};
 });
