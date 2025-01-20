@@ -50,9 +50,11 @@ let hoverElement = null;
 let moves = null;
 
 const mousedown = () => {
+	hoverElement = null;
 	isDragging.value = true;
 	moves = gameStore.getValidMoves(props.square.square);
 	gameStore.clearMarks();
+	gameStore.clearHovered();
 	moves.forEach((move) => {
 		gameStore.addMark(move.to, "move-mark");
 	});
@@ -64,6 +66,9 @@ const mouseup = () => {
 	transition.value = "0.25s";
 	x.value = 0;
 	y.value = 0;
+	if (!hoverElement) {
+		return;
+	}
 	const moveSquare = hoverElement.dataset.square;
 	if (moveSquare !== "") {
 		for (const move of moves) {
@@ -72,6 +77,7 @@ const mouseup = () => {
 			}
 		}
 	}
+	hoverElement = null;
 };
 window.addEventListener("mousemove", (e) => {
 	if (isDragging.value) {
