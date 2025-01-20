@@ -2,7 +2,7 @@
 	<div>
 		<h1>Chess Game</h1>
 		<div class="board">
-			<ChessBoard :board="board" />
+			<ChessBoard :board="gameStore.board" @pieceselected="pieceselected" />
 			<CustomButton @click="run(true)">Run</CustomButton>
 			<CustomButton @click="run(false)">Pause</CustomButton>
 		</div>
@@ -10,39 +10,33 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { Chess } from "chess.js";
+import { onMounted } from "vue";
+import { useGameStore } from "@/stores/game";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import ChessBoard from "@/components/game/ChessBoard.vue";
 
-const chess = new Chess();
-const ascii = ref(chess.ascii());
-const board = ref(chess.board());
-console.log(chess.board());
+const gameStore = useGameStore();
 let interval = null;
 const run = (start) => {
 	if (start && interval === null) {
-		interval = setInterval(makeRandomMove, 100);
+		interval = setInterval(makeRandomMove, 10);
 	} else if (!start) {
 		clearInterval(interval);
 		interval = null;
 	}
 };
 
-// Methods
+// Hooks
+onMounted(() => {
+	gameStore.initGame();
+});
+
 const makeRandomMove = () => {
-	const moves = chess.moves();
-	if (chess.isGameOver() || moves.length === 0) {
-		run(false);
-		alert("Game Over!");
-		return;
-	}
-	if (moves.length > 0) {
-		const move = moves[Math.floor(Math.random() * moves.length)];
-		chess.move(move);
-		ascii.value = chess.ascii();
-		board.value = chess.board();
-	}
+	gameStore.makeRandomMove();
+};
+
+const pieceselected = (square) => {
+	gameStore.addMark(square.key);
 };
 </script>
 

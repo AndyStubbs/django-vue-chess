@@ -4,19 +4,12 @@
 		width="10"
 		height="10"
 		draggable="false"
-		@mousedown="isDragging = true"
-		@mouseup="isDragging = false"
-		:style="{
-			left: `${x}px`,
-			top: `${y}px`,
-			cursor: isDragging ? 'grabbing' : 'grab',
-			zIndex: isDragging ? 1 : 0,
-		}"
+		@mousedown="$emit('pieceselected', square)"
+		@mouseup="$emit('piecereleased', square)"
 	/>
 </template>
 
 <script setup>
-import { ref } from "vue";
 defineProps({
 	square: Object,
 });
@@ -40,23 +33,6 @@ const getPiece = (square) => {
 	}
 	return PIECES[square.type];
 };
-const isDragging = ref(false);
-const mousePosX = ref(0);
-const mousePosY = ref(0);
-const x = ref(0);
-const y = ref(0);
-
-window.addEventListener("mousemove", (e) => {
-	if (isDragging.value) {
-		const diffX = e.clientX - mousePosX.value;
-		const diffY = e.clientY - mousePosY.value;
-		x.value += diffX;
-		y.value += diffY;
-	}
-	mousePosX.value = e.clientX;
-	mousePosY.value = e.clientY;
-});
-document.addEventListener("mouseleave", () => (isDragging.value = false));
 </script>
 <style scoped>
 img {

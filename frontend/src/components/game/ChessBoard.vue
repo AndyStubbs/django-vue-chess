@@ -2,26 +2,29 @@
 	<div class="chess-board" :style="`--square-size: ${squareSize}px`">
 		<div v-for="(row, rowIndex) in board" :key="rowIndex" class="chess-row">
 			<div
-				v-for="(square, colIndex) in row"
-				:key="`${rowIndex}-${colIndex}`"
+				v-for="square in row"
+				:key="square.key"
 				class="chess-square"
-				:class="[getSquareColor(rowIndex, colIndex)]"
+				:class="square.bColor"
 			>
-				<ChessPiece v-if="square?.type" :square="square"></ChessPiece>
+				<ChessPiece
+					v-if="square?.type"
+					:square="square"
+					@pieceselected="$emit('pieceselected', square)"
+					@piecereleased="$emit('piecereleased', square)"
+				></ChessPiece>
+				<div v-if="square?.marked" class="mark">&nbsp;</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import ChessPiece from "./ChessPiece.vue";
+import ChessPiece from "@/components/game/ChessPiece.vue";
 defineProps({
 	board: Array,
 });
 const squareSize = 80;
-const getSquareColor = (rowIndex, colIndex) => {
-	return (rowIndex + colIndex) % 2 === 0 ? "white" : "black";
-};
 </script>
 
 <style scoped>
@@ -51,5 +54,16 @@ const getSquareColor = (rowIndex, colIndex) => {
 }
 .chess-square.black {
 	background-color: #b58863;
+}
+.chess-square .mark {
+	border: 2px inset #33aa33;
+	position: absolute;
+	background-color: #33cc33;
+	width: calc(var(--square-size) * 0.67);
+	height: calc(var(--square-size) * 0.67);
+	text-align: center;
+	border-radius: 999px;
+	opacity: 0.5;
+	transform: rotate(180deg);
 }
 </style>
