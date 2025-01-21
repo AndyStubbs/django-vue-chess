@@ -1,0 +1,5 @@
+Chess AI's:
+https://github.com/ashishpapanai/chessJS
+https://github.com/zeyu2001/chess-ai/tree/main
+https://github.com/nmrugg/stockfish.js
+https://github.com/glinscott/Garbochess-JS
