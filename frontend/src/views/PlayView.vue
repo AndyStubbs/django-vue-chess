@@ -30,7 +30,9 @@
 						</template>
 					</ToggleGroup>
 					<div class="control-options">
-						<CustomButton type="submit" variant="3">Start Game</CustomButton>
+						<CustomButton type="submit" variant="3" @click="startGame"
+							>Start Game</CustomButton
+						>
 					</div>
 				</form>
 			</div>
@@ -40,6 +42,8 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useGameStore } from "@/stores/game";
 import api from "@/utils/api";
 import URLS from "@/utils/urls";
 import CustomButton from "@/components/custom/CustomButton.vue";
@@ -55,22 +59,37 @@ const OPPONENTS = [
 // Bots
 const BOTS = [{ id: 0, value: "Randy" }];
 
+// Use Variables
+const gameStore = useGameStore();
+const router = useRouter();
+
 // Refs
 const gameOpponent = ref(OPPONENTS[1]);
 const gameBot = ref(BOTS[0]);
 const selectedGameMode = ref({ id: -1 });
-const gameModes = ref([]);
+
+// Other Variables
+let gameModes = [];
 
 // Hooks
 onMounted(async () => {
 	try {
 		const data = (await api(URLS.GAME_OPTIONS)).data;
-		gameModes.value = data.game_modes;
-		selectedGameMode.value = gameModes.value.find((gm) => gm.id === data.default_game_mode);
+		gameModes = structuredClone(data.game_modes);
+		selectedGameMode.value = gameModes.find((gm) => gm.id === data.default_game_mode);
 	} catch (error) {
 		console.error("Failed to load game modes:", error);
 	}
 });
+
+const startGame = () => {
+	gameStore.setGameSettings({
+		opponent: gameOpponent.value,
+		bot: gameBot.value,
+		mode: selectedGameMode.value,
+	});
+	router.push({ name: "game" });
+};
 </script>
 
 <style scoped>

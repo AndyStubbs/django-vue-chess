@@ -40,12 +40,27 @@ function getSquareFromIndices(colIndex, rowIndex) {
 }
 
 export const useGameStore = defineStore("game", () => {
+	const settings = {
+		opponent: null,
+		bot: null,
+		mode: null,
+	};
+
 	const chess = new Chess();
 	const board = shallowRef([]);
 	const marks = new Map();
 	let hovered = null;
 
+	const setGameSettings = ({ opponent, bot, mode }) => {
+		settings.opponent = opponent;
+		settings.bot = bot;
+		settings.mode = mode;
+	};
+
 	const initGame = () => {
+		if (!settings.mode) {
+			throw new Error("Unable to start game, game settings not set.");
+		}
 		resetGame();
 	};
 
@@ -127,6 +142,11 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	return {
+		// Game settings
+		settings,
+		setGameSettings,
+
+		// Game Logic
 		chess,
 		board,
 		initGame,
