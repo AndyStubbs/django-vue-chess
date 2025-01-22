@@ -1,7 +1,11 @@
 <template>
 	<div>
-		<div class="board">
+		<div class="game">
 			<ChessBoard :board="gameStore.board" />
+			<div class="players">
+				<PlayerScoreboard color="b" />
+				<PlayerScoreboard color="w" />
+			</div>
 			<CustomButton @click="run(true)">Run</CustomButton>
 			<CustomButton @click="run(false)">Pause</CustomButton>
 		</div>
@@ -13,6 +17,7 @@ import { onMounted } from "vue";
 import { useGameStore } from "@/stores/game";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import ChessBoard from "@/components/game/ChessBoard.vue";
+import PlayerScoreboard from "@/components/game/PlayerScoreboard.vue";
 
 const gameStore = useGameStore();
 let interval = null;
@@ -36,9 +41,14 @@ const makeRandomMove = () => {
 </script>
 
 <style scoped>
-.board {
+.game {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+.players {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
 }
 </style>

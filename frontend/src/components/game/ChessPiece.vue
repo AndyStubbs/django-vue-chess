@@ -19,26 +19,12 @@
 <script setup>
 import { ref } from "vue";
 import { useGameStore } from "@/stores/game";
+import { PIECES } from "@/utils/constants";
 
 const gameStore = useGameStore();
 const props = defineProps({
 	square: Object,
 });
-const PIECES = {
-	P: "/images/chess/pawn-w.svg", // White Pawn
-	p: "/images/chess/pawn-b.svg", // Black Pawn
-	N: "/images/chess/knight-w.svg", // White Knight
-	n: "/images/chess/knight-b.svg", // Black Knight
-	B: "/images/chess/bishop-w.svg", // White Bishop
-	b: "/images/chess/bishop-b.svg", // Black Bishop
-	R: "/images/chess/rook-w.svg", // White Rook
-	r: "/images/chess/rook-b.svg", // Black Rook
-	Q: "/images/chess/queen-w.svg", // White Queen
-	q: "/images/chess/queen-b.svg", // Black Queen
-	K: "/images/chess/king-w.svg", // White King
-	k: "/images/chess/king-b.svg", // Black King
-};
-
 const isDragging = ref(false);
 const mousePosX = ref(0);
 const mousePosY = ref(0);
