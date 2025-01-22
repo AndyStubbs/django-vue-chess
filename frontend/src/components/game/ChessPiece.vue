@@ -85,6 +85,7 @@ window.addEventListener("mousemove", (e) => {
 	mousePosY.value = e.clientY;
 });
 </script>
+
 <style scoped>
 img {
 	position: relative;
