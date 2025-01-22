@@ -2,12 +2,14 @@
 	<div>
 		<div class="game">
 			<ChessBoard :board="gameStore.board" />
-			<div class="players">
+			<div class="scoreboards">
 				<PlayerScoreboard color="b" />
 				<PlayerScoreboard color="w" />
 			</div>
-			<CustomButton @click="run(true)">Run</CustomButton>
-			<CustomButton @click="run(false)">Pause</CustomButton>
+			<div class="actions">
+				<CustomButton @click="run(true)">Run</CustomButton>
+				<CustomButton @click="run(false)">Pause</CustomButton>
+			</div>
 		</div>
 	</div>
 </template>
@@ -46,9 +48,16 @@ const makeRandomMove = () => {
 	flex-direction: column;
 	align-items: center;
 }
-.players {
+.scoreboards {
+	position: relative;
+	left: 8px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
+	column-gap: 32px;
+}
+.actions {
+	margin-top: 16px;
+	display: flex;
 }
 </style>

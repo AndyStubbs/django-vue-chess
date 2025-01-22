@@ -76,7 +76,7 @@ function handleBackdropClick() {
 }
 
 .modal-content {
-	background: var(--bg-color-1);
+	background: var(--bg-color-2);
 	padding: 1.5rem;
 	border-radius: 8px;
 	width: 100%;

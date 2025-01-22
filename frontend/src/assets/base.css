@@ -6,6 +6,7 @@
 	/* Fonts */
 	--font-body: "Roboto", sans-serif;
 	--font-header: "Playfair Display", serif;
+	--font-time: "Orbitron", serif;
 
 	/* Light mode colors */
 	--bg-color-1: #f4f4f490;
@@ -14,10 +15,13 @@
 	--bg-color-4: #eee;
 	--fg-color-1: #000000;
 	--fg-color-2: #333;
+	--fg-color-3: #fff;
 	--shadow-color-1: rgba(0, 0, 0, 0.1);
 	--shadow-color-2: rgba(0, 0, 0, 0.5);
+	--shadow-color-3: #0a3543;
+	--shadow-color-4: #0a3543aa;
 	--input-bg-color-1: #fff;
-	--border-color-1: #ddd;
+	--border-color-1: #555;
 	--green-color-1: #4caf50;
 	--light-overlay: rgba(255, 255, 255, 0.8);
 	--dark-overlay: rgba(0, 0, 0, 0.2);
@@ -69,10 +73,12 @@
 	--bg-color-4: #555;
 	--fg-color-1: #fff;
 	--fg-color-2: #aaa;
-	--fg-color-3: #888;
+	--fg-color-3: #000;
 	--input-bg-color-1: #1e1e1e;
 	--shadow-color-1: rgba(255, 255, 255, 0.1);
 	--shadow-color-2: rgba(255, 255, 255, 0.25);
+	--shadow-color-3: #add8e6;
+	--shadow-color-4: #add8e6aa;
 	--border-color-1: #3f3f3f;
 	--green-color-1: #4caf50;
 	--bg-color-3: #2f2f2f;
