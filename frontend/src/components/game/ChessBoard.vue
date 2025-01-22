@@ -1,6 +1,7 @@
 <template>
 	<div class="chess-board" :style="`--square-size: ${squareSize}px`">
 		<div v-for="(row, rowIndex) in board" :key="rowIndex" class="chess-row">
+			<div class="border-left board-label">{{ 8 - rowIndex }}</div>
 			<div
 				v-for="square in row"
 				:key="square.square"
@@ -11,6 +12,12 @@
 			>
 				<div v-if="square.marked" class="mark" :class="square.marked">&nbsp;</div>
 				<ChessPiece v-if="square.type" :square="square"></ChessPiece>
+			</div>
+		</div>
+		<div class="border-bottom">
+			<div class="blank">8</div>
+			<div v-for="i in 8" :key="i" class="board-label">
+				{{ String.fromCharCode("A".charCodeAt(0) + i - 1) }}
 			</div>
 		</div>
 	</div>
@@ -26,8 +33,8 @@ const squareSize = 80;
 
 <style scoped>
 .chess-board {
-	display: grid;
-	grid-template-rows: repeat(8, 0fr);
+	/*display: grid;
+	grid-template-rows: repeat(8, 0fr);*/
 	max-width: 100%;
 	max-height: 100%;
 	margin: auto;
@@ -35,7 +42,7 @@ const squareSize = 80;
 }
 .chess-row {
 	display: grid;
-	grid-template-columns: repeat(8, 0fr);
+	grid-template-columns: repeat(9, 0fr);
 }
 .chess-square {
 	aspect-ratio: 1 / 1;
@@ -71,5 +78,32 @@ const squareSize = 80;
 .chess-square .move-mark {
 	border: 4px inset #0c810c;
 	background-color: #23d423;
+}
+.border-left {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+}
+.board-label {
+	font-size: larger;
+}
+.border-bottom {
+	display: grid;
+	grid-template-columns: repeat(9, 0fr);
+}
+.blank {
+	font-size: larger;
+	width: 24px;
+	color: #00000000;
+}
+.border-bottom .board-label {
+	aspect-ratio: 1 / 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 18px;
+	width: var(--square-size);
+	height: 32px;
 }
 </style>

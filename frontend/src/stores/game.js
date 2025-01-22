@@ -58,9 +58,9 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const initGame = () => {
-		if (!settings.mode) {
-			throw new Error("Unable to start game, game settings not set.");
-		}
+		//if (!settings.mode) {
+		//	throw new Error("Unable to start game, game settings not set.");
+		//}
 		resetGame();
 	};
 

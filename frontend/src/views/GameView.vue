@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h1>Chess Game</h1>
 		<div class="board">
 			<ChessBoard :board="gameStore.board" />
 			<CustomButton @click="run(true)">Run</CustomButton>
