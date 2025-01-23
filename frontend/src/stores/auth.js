@@ -14,6 +14,8 @@ export const useAuthStore = defineStore("auth", {
 	state: () => ({
 		isAuthenticated: false,
 		isLoggedIn: false,
+		displayName: "Guest",
+		rating: 237,
 		username: "",
 		email: "",
 		tokenRefreshTimer: null,

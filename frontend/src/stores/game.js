@@ -5,6 +5,7 @@
 import { shallowRef } from "vue";
 import { defineStore } from "pinia";
 import { Chess } from "chess.js";
+import { loadBots } from "@/utils/loadBots";
 
 function mapBoard(board, marks, hovered) {
 	return board.map((row, rowIndex) => {
@@ -39,33 +40,54 @@ function getSquareFromIndices(colIndex, rowIndex) {
 	return `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${8 - rowIndex}`;
 }
 
-export const useGameStore = defineStore("game", () => {
-	const settings = {
-		opponent: null,
-		bot: null,
-		mode: null,
-	};
+async function loadBot(player) {
+	const allBots = await loadBots();
+	const displayName = player.bot.displayName;
+	player.bot = allBots.find((bot) => bot.displayName === displayName);
+}
 
-	const chess = new Chess();
+const DEFAULT_SETTINGS = {
+	players: {
+		w: {
+			displayName: null,
+			rating: null,
+			userId: null,
+			isMainPlayer: false,
+			bot: null,
+			time: 0,
+		},
+		b: {
+			displayName: null,
+			rating: null,
+			userId: null,
+			isMainPlayer: false,
+			bot: null,
+			time: 0,
+		},
+	},
+	opponentType: null,
+	mode: null,
+};
+
+export const useGameStore = defineStore("game", () => {
+	let settings = structuredClone(DEFAULT_SETTINGS);
+	let chess = new Chess();
 	const board = shallowRef([]);
 	const marks = new Map();
 	let hovered = null;
+	let saveTimeout = null;
 
-	const setGameSettings = ({ opponent, bot, mode }) => {
-		settings.opponent = opponent;
-		settings.bot = bot;
+	const setGameSettings = ({ opponentType, mode, players }) => {
+		settings = structuredClone(DEFAULT_SETTINGS);
+		settings.opponentType = opponentType;
 		settings.mode = mode;
-	};
-
-	const initGame = () => {
-		//if (!settings.mode) {
-		//	throw new Error("Unable to start game, game settings not set.");
-		//}
+		settings.players = players;
 		resetGame();
 	};
 
 	const updateBoard = () => {
 		board.value = mapBoard(chess.board(), marks, hovered);
+		saveGame();
 	};
 
 	const makeMove = (move) => {
@@ -98,8 +120,8 @@ export const useGameStore = defineStore("game", () => {
 
 	const endTurn = () => {
 		if (chess.isGameOver()) {
-			if (chess.isStalemate()) {
-				alert("Stalemate");
+			if (chess.isDraw()) {
+				alert("Draw");
 			} else {
 				if (chess.turn() === "b") {
 					alert("White Wins!");
@@ -115,11 +137,6 @@ export const useGameStore = defineStore("game", () => {
 	const getValidMoves = (square) => {
 		const moves = chess.moves({ square, verbose: true });
 		return moves;
-	};
-
-	const resetGame = () => {
-		chess.reset();
-		updateBoard();
 	};
 
 	const addMark = (square, value) => {
@@ -141,6 +158,78 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
+	const saveGame = () => {
+		clearTimeout(saveTimeout);
+		saveTimeout = setTimeout(saveGame2, 1);
+	};
+
+	const resetGame = () => {
+		chess = new Chess();
+		chess.setHeader("White", settings.players.w.displayName);
+		chess.setHeader("Black", settings.players.b.displayName);
+		chess.setHeader("Date", new Date().toISOString().split("T")[0]);
+		updateBoard();
+	};
+
+	const saveGame2 = () => {
+		let wBotId = settings.players.w.bot ? settings.players.w.bot.id : null;
+		let bBotId = settings.players.b.bot ? settings.players.b.bot.id : null;
+		const gameData = {
+			settings: {
+				opponentType: settings.opponentType,
+				mode: settings.mode,
+				players: {
+					w: {
+						displayName: settings.players.w.displayName,
+						rating: settings.players.w.rating,
+						userId: settings.players.w.userId,
+						isMainPlayer: settings.players.w.isMainPlayer,
+						bot: wBotId,
+						time: settings.players.w.time,
+					},
+					b: {
+						displayName: settings.players.b.displayName,
+						rating: settings.players.b.rating,
+						userId: settings.players.b.userId,
+						isMainPlayer: settings.players.b.isMainPlayer,
+						bot: bBotId,
+						time: settings.players.b.time,
+					},
+				},
+			},
+			pgn: chess.pgn(),
+		};
+		localStorage.setItem("gameData", JSON.stringify(gameData));
+	};
+
+	const restoreGame = async () => {
+		const dataStr = localStorage.getItem("gameData");
+		if (!dataStr) {
+			return;
+		}
+		const data = JSON.parse(dataStr);
+		const loadedSettings = data.settings;
+		const loadedPgn = data.pgn;
+
+		// Load Settings
+		settings.opponentType = loadedSettings.opponentType;
+		settings.mode = loadedSettings.mode;
+		settings.players = loadedSettings.players;
+		if (settings.players.w.bot) {
+			loadBot(settings.players.w);
+		}
+		if (settings.players.b.bot) {
+			loadBot(settings.players.b);
+		}
+
+		// Load Chess Game
+		chess = new Chess();
+		chess.loadPgn(loadedPgn);
+
+		// Update the board
+		updateBoard();
+	};
+
 	return {
 		// Game settings
 		settings,
@@ -149,11 +238,11 @@ export const useGameStore = defineStore("game", () => {
 		// Game Logic
 		chess,
 		board,
-		initGame,
+		resetGame,
+		restoreGame,
 		makeMove,
 		makeRandomMove,
 		getValidMoves,
-		resetGame,
 		addMark,
 		clearMarks,
 		addHovered,

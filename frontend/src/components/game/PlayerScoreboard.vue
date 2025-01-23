@@ -5,7 +5,7 @@
 		</div>
 		<div class="details">
 			<div class="name">
-				<div>Player 1 (206)</div>
+				<div>{{ playerStats }}</div>
 				<div class="time">08:13</div>
 			</div>
 			<div class="captures">
@@ -22,6 +22,7 @@
 import { PIECES } from "@/utils/constants";
 defineProps({
 	color: String,
+	playerStats: String,
 });
 </script>
 
