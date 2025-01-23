@@ -2,7 +2,7 @@
 
 "use strict";
 
-import { shallowRef } from "vue";
+import { ref, shallowRef } from "vue";
 import { defineStore } from "pinia";
 import { Chess } from "chess.js";
 import { loadBots } from "@/utils/loadBots";
@@ -73,6 +73,7 @@ export const useGameStore = defineStore("game", () => {
 	let settings = structuredClone(DEFAULT_SETTINGS);
 	let chess = new Chess();
 	const board = shallowRef([]);
+	const turn = ref("w");
 	const marks = new Map();
 	let hovered = null;
 	let saveTimeout = null;
@@ -87,6 +88,7 @@ export const useGameStore = defineStore("game", () => {
 
 	const updateBoard = () => {
 		board.value = mapBoard(chess.board(), marks, hovered);
+		turn.value = chess.turn();
 		saveGame();
 	};
 
@@ -238,6 +240,7 @@ export const useGameStore = defineStore("game", () => {
 		// Game Logic
 		chess,
 		board,
+		turn,
 		resetGame,
 		restoreGame,
 		makeMove,

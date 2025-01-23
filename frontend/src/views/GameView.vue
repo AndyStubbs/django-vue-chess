@@ -6,12 +6,14 @@
 				<!-- Display Black Player Info -->
 				<PlayerScoreboard
 					color="b"
+					:active="gameStore.turn === 'b'"
 					:player-stats="getPlayerStats(gameStore.settings.players.b)"
 				/>
 
 				<!-- Display White Player Info -->
 				<PlayerScoreboard
 					color="w"
+					:active="gameStore.turn === 'w'"
 					:player-stats="getPlayerStats(gameStore.settings.players.w)"
 				/>
 			</div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="scoreboard">
+	<div class="scoreboard" :class="active ? 'active' : undefined">
 		<div class="icon">
 			<img :src="color === 'b' ? PIECES.k : PIECES.K" :class="color" />
 		</div>
@@ -23,6 +23,7 @@ import { PIECES } from "@/utils/constants";
 defineProps({
 	color: String,
 	playerStats: String,
+	active: Boolean,
 });
 </script>
 
@@ -34,10 +35,15 @@ defineProps({
 	width: 300px;
 	height: 80px;
 	color: var(--fg-color-1);
-	border: 3px solid var(--border-color-1);
+	border: 3px solid var(--shadow-color-1);
 	box-shadow: 0 0 5px var(--shadow-color-3);
 	border-radius: 9px;
 	padding: 5px;
+	background-color: #ffda9e66;
+}
+.scoreboard.active {
+	border: 3px solid var(--green-color-1);
+	box-shadow: 0 0 5px var(--green-color-1);
 }
 .details {
 	display: flex;
