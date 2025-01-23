@@ -47,7 +47,7 @@
 
 					<!-- Start Game -->
 					<div class="control-options">
-						<CustomButton type="submit" variant="3" @click="startGame">
+						<CustomButton type="button" variant="3" @click="startGame">
 							Start Game
 						</CustomButton>
 					</div>
@@ -76,6 +76,7 @@ const OPPONENT_TYPES = [
 ];
 
 const PIECE_PREFERENCES = [
+	{ id: "r", value: "Random" },
 	{ id: "w", value: "White" },
 	{ id: "b", value: "Black" },
 ];
@@ -113,23 +114,26 @@ onMounted(async () => {
 
 // Start game logic
 const startGame = () => {
+	let userColor = piecePreference.value.id;
+	if (userColor === "r") {
+		userColor = Math.random() > 0.5 ? "w" : "b";
+	}
 	const playerSettings = {
-		[piecePreference.value.id]: {
+		[userColor]: {
 			displayName: authStore.displayName,
 			rating: authStore.rating,
 			userId: authStore.userId,
-			isMainPlayer: true,
-			bot: null,
+			botId: null,
 		},
-		[piecePreference.value.id === "w" ? "b" : "w"]: {
+		[userColor === "w" ? "b" : "w"]: {
 			displayName: selectedBot.value.displayName,
 			rating: selectedBot.value.rating,
 			userId: selectedBot.value.id,
-			isMainPlayer: false,
-			bot: selectedBot.value,
+			botId: selectedBot.value.id,
 		},
 	};
 	gameStore.setGameSettings({
+		userColor,
 		opponentType: opponentType.value,
 		mode: selectedGameMode.value,
 		players: playerSettings,

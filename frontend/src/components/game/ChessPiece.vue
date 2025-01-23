@@ -9,7 +9,7 @@
 		:style="{
 			left: `${x}px`,
 			top: `${y}px`,
-			cursor: isDragging ? 'grabbing' : 'grab',
+			cursor,
 			zIndex: isDragging ? 1 : 0,
 			transitionDuration: transition,
 		}"
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useGameStore } from "@/stores/game";
 import { PIECES } from "@/utils/constants";
 
@@ -35,7 +35,23 @@ const transition = ref("0");
 let hoverElement = null;
 let moves = null;
 
+const cursor = computed(() => {
+	if (
+		gameStore.turn === gameStore.settings.userColor &&
+		props.square.color === gameStore.settings.userColor
+	) {
+		return isDragging.value ? "grabbing" : "grab";
+	}
+	return "not-allowed";
+});
+
 const mousedown = () => {
+	if (
+		props.square.color !== gameStore.settings.userColor ||
+		gameStore.turn !== gameStore.settings.userColor
+	) {
+		return;
+	}
 	hoverElement = null;
 	isDragging.value = true;
 	moves = gameStore.getValidMoves(props.square.square);

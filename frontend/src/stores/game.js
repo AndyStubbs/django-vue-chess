@@ -40,31 +40,24 @@ function getSquareFromIndices(colIndex, rowIndex) {
 	return `${String.fromCharCode("a".charCodeAt(0) + colIndex)}${8 - rowIndex}`;
 }
 
-async function loadBot(player) {
-	const allBots = await loadBots();
-	const displayName = player.bot.displayName;
-	player.bot = allBots.find((bot) => bot.displayName === displayName);
-}
-
 const DEFAULT_SETTINGS = {
 	players: {
 		w: {
 			displayName: null,
 			rating: null,
 			userId: null,
-			isMainPlayer: false,
-			bot: null,
+			botId: null,
 			time: 0,
 		},
 		b: {
 			displayName: null,
 			rating: null,
 			userId: null,
-			isMainPlayer: false,
-			bot: null,
+			botId: null,
 			time: 0,
 		},
 	},
+	userColor: null,
 	opponentType: null,
 	mode: null,
 };
@@ -72,17 +65,24 @@ const DEFAULT_SETTINGS = {
 export const useGameStore = defineStore("game", () => {
 	let settings = structuredClone(DEFAULT_SETTINGS);
 	let chess = new Chess();
+	let hovered = null;
 	const board = shallowRef([]);
 	const turn = ref("w");
 	const marks = new Map();
-	let hovered = null;
-	let saveTimeout = null;
 
-	const setGameSettings = ({ opponentType, mode, players }) => {
+	const setGameSettings = ({ opponentType, mode, players, userColor }) => {
 		settings = structuredClone(DEFAULT_SETTINGS);
 		settings.opponentType = opponentType;
 		settings.mode = mode;
 		settings.players = players;
+		settings.userColor = userColor;
+		console.log(settings.userColor);
+		if (settings.players.w.botId) {
+			loadBot(settings.players.w);
+		}
+		if (settings.players.b.botId) {
+			loadBot(settings.players.b);
+		}
 		resetGame();
 	};
 
@@ -162,9 +162,8 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
-	const saveGame = () => {
-		clearTimeout(saveTimeout);
-		saveTimeout = setTimeout(saveGame2, 1);
+	const startGame = () => {
+		endTurn();
 	};
 
 	const resetGame = () => {
@@ -175,11 +174,10 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
-	const saveGame2 = () => {
-		let wBotId = settings.players.w.bot ? settings.players.w.bot.id : null;
-		let bBotId = settings.players.b.bot ? settings.players.b.bot.id : null;
+	const saveGame = () => {
 		const gameData = {
 			settings: {
+				userColor: settings.userColor,
 				opponentType: settings.opponentType,
 				mode: settings.mode,
 				players: {
@@ -187,16 +185,14 @@ export const useGameStore = defineStore("game", () => {
 						displayName: settings.players.w.displayName,
 						rating: settings.players.w.rating,
 						userId: settings.players.w.userId,
-						isMainPlayer: settings.players.w.isMainPlayer,
-						bot: wBotId,
+						botId: settings.players.w.botId,
 						time: settings.players.w.time,
 					},
 					b: {
 						displayName: settings.players.b.displayName,
 						rating: settings.players.b.rating,
 						userId: settings.players.b.userId,
-						isMainPlayer: settings.players.b.isMainPlayer,
-						bot: bBotId,
+						botId: settings.players.b.botId,
 						time: settings.players.b.time,
 					},
 				},
@@ -219,10 +215,11 @@ export const useGameStore = defineStore("game", () => {
 		settings.opponentType = loadedSettings.opponentType;
 		settings.mode = loadedSettings.mode;
 		settings.players = loadedSettings.players;
-		if (settings.players.w.bot) {
+		settings.userColor = loadedSettings.userColor;
+		if (settings.players.w.botId) {
 			loadBot(settings.players.w);
 		}
-		if (settings.players.b.bot) {
+		if (settings.players.b.botId) {
 			loadBot(settings.players.b);
 		}
 
@@ -234,15 +231,24 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
+	const loadBot = async (player) => {
+		const allBots = await loadBots();
+		player.bot = allBots.find((bot) => bot.id === player.botId);
+		endTurn();
+	};
+
 	return {
 		// Game settings
 		settings,
 		setGameSettings,
 
-		// Game Logic
+		// Game State
 		chess,
 		board,
 		turn,
+
+		// Game Methods
+		startGame,
 		resetGame,
 		restoreGame,
 		makeMove,

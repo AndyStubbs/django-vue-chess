@@ -24,6 +24,7 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { useGameStore } from "@/stores/game";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import ChessBoard from "@/components/game/ChessBoard.vue";
@@ -49,6 +50,11 @@ const reset = () => {
 const makeRandomMove = () => {
 	gameStore.makeRandomMove();
 };
+
+// Hooks
+onMounted(() => {
+	gameStore.startGame();
+});
 </script>
 
 <style scoped>
