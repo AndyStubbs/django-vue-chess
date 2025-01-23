@@ -3,18 +3,15 @@
 		<div class="game">
 			<ChessBoard :board="gameStore.board" />
 			<div class="scoreboards">
-				<!-- Display Black Player Info -->
-				<PlayerScoreboard
-					color="b"
-					:active="gameStore.turn === 'b'"
-					:player-stats="getPlayerStats(gameStore.settings.players.b)"
-				/>
-
-				<!-- Display White Player Info -->
 				<PlayerScoreboard
 					color="w"
 					:active="gameStore.turn === 'w'"
 					:player-stats="getPlayerStats(gameStore.settings.players.w)"
+				/>
+				<PlayerScoreboard
+					color="b"
+					:active="gameStore.turn === 'b'"
+					:player-stats="getPlayerStats(gameStore.settings.players.b)"
 				/>
 			</div>
 			<div class="actions">

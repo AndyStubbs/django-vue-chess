@@ -112,15 +112,13 @@ export const useGameStore = defineStore("game", () => {
 		}
 		if (moves.length > 0) {
 			const move = moves[Math.floor(Math.random() * moves.length)];
-			chess.move(move);
-			updateBoard();
-			endTurn();
+			makeMove(move);
 			return true;
 		}
 		return false;
 	};
 
-	const endTurn = () => {
+	const endTurn = async () => {
 		if (chess.isGameOver()) {
 			if (chess.isDraw()) {
 				alert("Draw");
@@ -131,8 +129,12 @@ export const useGameStore = defineStore("game", () => {
 					alert("Black Wins");
 				}
 			}
-		} else if (chess.turn() === "b") {
-			makeRandomMove();
+		} else {
+			const bot = settings.players[chess.turn()].bot;
+			if (bot) {
+				const move = await bot.getMove(chess);
+				makeMove(move);
+			}
 		}
 	};
 

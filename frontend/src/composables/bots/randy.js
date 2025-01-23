@@ -9,7 +9,11 @@ export function useBot() {
 
 	const getMove = (chess) => {
 		const moves = chess.moves();
-		return moves[Math.floor(Math.random() * moves.length)];
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				resolve(moves[Math.floor(Math.random() * moves.length)]);
+			}, Math.random() * 1000);
+		});
 	};
 
 	return {
