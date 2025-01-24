@@ -6,12 +6,12 @@
 				<PlayerScoreboard
 					color="w"
 					:active="gameStore.turn === 'w'"
-					:player-stats="gameStore.players.w.displayName"
+					:player="gameStore.players.w"
 				/>
 				<PlayerScoreboard
 					color="b"
 					:active="gameStore.turn === 'b'"
-					:player-stats="gameStore.players.b.displayName"
+					:player="gameStore.players.b"
 				/>
 			</div>
 			<div class="actions">

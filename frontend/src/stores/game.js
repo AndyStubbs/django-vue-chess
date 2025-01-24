@@ -6,6 +6,7 @@ import { ref, shallowRef } from "vue";
 import { defineStore } from "pinia";
 import { Chess } from "chess.js";
 import { loadBots } from "@/utils/loadBots";
+import { PIECE_WEIGHTS } from "@/utils/constants";
 
 function mapBoard(board, marks, hovered, isReverse) {
 	const mappedBoard = [];
@@ -92,7 +93,7 @@ export const useGameStore = defineStore("game", () => {
 		opponentType = settings.opponentType;
 		mode = settings.mode;
 		userColor.value = settings.userColor;
-		resetPlayers(players.value, staticPlayersData, settings.players);
+		resetPlayers(settings.players);
 		userColor.value = settings.userColor;
 		resetGame();
 	};
@@ -106,6 +107,19 @@ export const useGameStore = defineStore("game", () => {
 	const makeMove = (move) => {
 		try {
 			chess.move(move);
+			if (move.captured) {
+				const captured = turn.value === "b" ? move.captured.toUpperCase() : move.captured;
+				players.value[turn.value].captures.push(captured);
+				players.value[turn.value].captures.sort((a, b) => {
+					console.log(
+						a,
+						b,
+						PIECE_WEIGHTS[a.toLowerCase()] - PIECE_WEIGHTS[b.toLowerCase()],
+					);
+					return PIECE_WEIGHTS[a.toLowerCase()] - PIECE_WEIGHTS[b.toLowerCase()];
+				});
+				console.log(players.value[turn.value].captures);
+			}
 			clearMarks();
 			clearHovered();
 			updateBoard();
@@ -117,7 +131,7 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const makeRandomMove = () => {
-		const moves = chess.moves();
+		const moves = chess.moves({ verbose: true });
 		if (chess.isGameOver()) {
 			return false;
 		}
@@ -182,6 +196,7 @@ export const useGameStore = defineStore("game", () => {
 		chess.setHeader("White", staticPlayersData.w.name);
 		chess.setHeader("Black", staticPlayersData.b.name);
 		chess.setHeader("Date", new Date().toISOString().split("T")[0]);
+		resetPlayers();
 		updateBoard();
 		endTurn();
 	};
@@ -229,7 +244,7 @@ export const useGameStore = defineStore("game", () => {
 		opponentType = loadedSettings.opponentType;
 		mode = loadedSettings.mode;
 		userColor.value = loadedSettings.userColor;
-		resetPlayers(players.value, staticPlayersData, loadedSettings.players);
+		resetPlayers(loadedSettings.players);
 		players.value.w.time = loadedSettings.players.w.time;
 		players.value.w.captures = loadedSettings.players.w.captures;
 		players.value.b.time = loadedSettings.players.b.time;
@@ -243,24 +258,28 @@ export const useGameStore = defineStore("game", () => {
 		updateBoard();
 	};
 
-	const resetPlayers = (playersValue, staticPlayersData, players) => {
+	const resetPlayers = (playersNewData) => {
 		// White player
-		staticPlayersData.w.name = players.w.name;
-		staticPlayersData.w.rating = players.w.rating;
-		staticPlayersData.w.userId = players.w.userId;
-		staticPlayersData.w.botId = players.w.botId;
-		playersValue.w.displayName = `${players.w.name} (${players.w.rating})`;
-		playersValue.w.time = 0;
-		playersValue.w.captures = [];
+		if (playersNewData) {
+			staticPlayersData.w.name = playersNewData.w.name;
+			staticPlayersData.w.rating = playersNewData.w.rating;
+			staticPlayersData.w.userId = playersNewData.w.userId;
+			staticPlayersData.w.botId = playersNewData.w.botId;
+			players.value.w.displayName = `${playersNewData.w.name} (${playersNewData.w.rating})`;
+		}
+		players.value.w.time = 0;
+		players.value.w.captures = [];
 
 		// Black player
-		staticPlayersData.b.name = players.b.name;
-		staticPlayersData.b.rating = players.b.rating;
-		staticPlayersData.b.userId = players.b.userId;
-		staticPlayersData.b.botId = players.b.botId;
-		playersValue.b.displayName = `${players.b.name} (${players.b.rating})`;
-		playersValue.b.time = 0;
-		playersValue.b.captures = [];
+		if (playersNewData) {
+			staticPlayersData.b.name = playersNewData.b.name;
+			staticPlayersData.b.rating = playersNewData.b.rating;
+			staticPlayersData.b.userId = playersNewData.b.userId;
+			staticPlayersData.b.botId = playersNewData.b.botId;
+			players.value.b.displayName = `${playersNewData.b.name} (${playersNewData.b.rating})`;
+		}
+		players.value.b.time = 0;
+		players.value.b.captures = [];
 
 		// Load bots
 		if (staticPlayersData.w.botId) {

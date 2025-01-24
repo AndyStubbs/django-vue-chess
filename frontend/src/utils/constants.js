@@ -12,3 +12,11 @@ export const PIECES = {
 	K: "/images/chess/king-w.svg", // White King
 	k: "/images/chess/king-b.svg", // Black King
 };
+
+export const PIECE_WEIGHTS = {
+	p: 1,
+	n: 3,
+	b: 3.01,
+	r: 5,
+	q: 9,
+};

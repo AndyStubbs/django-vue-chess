@@ -5,14 +5,16 @@
 		</div>
 		<div class="details">
 			<div class="name">
-				<div>{{ playerStats }}</div>
+				<div>{{ player.displayName }}</div>
 				<div class="time">08:13</div>
 			</div>
 			<div class="captures">
-				<img :src="PIECES.p" />
-				<img :src="PIECES.p" />
-				<img :src="PIECES.p" />
-				<img :src="PIECES.p" />
+				<img
+					v-for="(capture, index) in player.captures"
+					:key="index"
+					:src="PIECES[capture]"
+					:class="capture.toLowerCase()"
+				/>
 			</div>
 		</div>
 	</div>
@@ -21,8 +23,8 @@
 <script setup>
 import { PIECES } from "@/utils/constants";
 defineProps({
+	player: Object,
 	color: String,
-	playerStats: String,
 	active: Boolean,
 });
 </script>
@@ -82,6 +84,21 @@ defineProps({
 .captures img {
 	width: 32px;
 	height: 32px;
-	margin-left: -20px;
+	margin-left: -10px;
+}
+.captures img.p {
+	margin-left: -25px;
+}
+.captures img.n {
+	margin-left: -15px;
+}
+.captures img.b {
+	margin-left: -15px;
+}
+.captures img.r {
+	margin-left: -15px;
+}
+.captures img.q {
+	margin-left: -10px;
 }
 </style>

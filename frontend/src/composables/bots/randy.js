@@ -8,7 +8,7 @@ export function useBot() {
 	const rating = 0;
 
 	const getMove = (chess) => {
-		const moves = chess.moves();
+		const moves = chess.moves({ verbose: true });
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				resolve(moves[Math.floor(Math.random() * moves.length)]);
