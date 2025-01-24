@@ -21,7 +21,7 @@
 					<div class="toggle-group">
 						<ToggleGroup :options="availableBots" v-model="selectedBot">
 							<template #default="{ option }">
-								{{ option.displayName }}
+								{{ option.name }}
 							</template>
 						</ToggleGroup>
 					</div>
@@ -120,13 +120,13 @@ const startGame = () => {
 	}
 	const playerSettings = {
 		[userColor]: {
-			displayName: authStore.displayName,
+			name: authStore.name,
 			rating: authStore.rating,
 			userId: authStore.userId,
 			botId: null,
 		},
 		[userColor === "w" ? "b" : "w"]: {
-			displayName: selectedBot.value.displayName,
+			name: selectedBot.value.name,
 			rating: selectedBot.value.rating,
 			userId: selectedBot.value.id,
 			botId: selectedBot.value.id,

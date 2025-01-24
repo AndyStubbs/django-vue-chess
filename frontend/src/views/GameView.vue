@@ -1,17 +1,17 @@
 <template>
 	<div>
 		<div class="game">
-			<ChessBoard :board="gameStore.board" />
+			<ChessBoard :board="gameStore.board" :is-reversed="gameStore.userColor === 'b'" />
 			<div class="scoreboards">
 				<PlayerScoreboard
 					color="w"
 					:active="gameStore.turn === 'w'"
-					:player-stats="getPlayerStats(gameStore.settings.players.w)"
+					:player-stats="gameStore.players.w.displayName"
 				/>
 				<PlayerScoreboard
 					color="b"
 					:active="gameStore.turn === 'b'"
-					:player-stats="getPlayerStats(gameStore.settings.players.b)"
+					:player-stats="gameStore.players.b.displayName"
 				/>
 			</div>
 			<div class="actions">
@@ -33,9 +33,6 @@ import PlayerScoreboard from "@/components/game/PlayerScoreboard.vue";
 const gameStore = useGameStore();
 
 let interval = null;
-const getPlayerStats = (player) => {
-	return `${player.displayName} (${player.rating})`;
-};
 const run = (start) => {
 	if (start && interval === null) {
 		interval = setInterval(makeRandomMove, 10);

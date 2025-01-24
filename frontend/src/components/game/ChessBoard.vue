@@ -1,7 +1,7 @@
 <template>
 	<div class="chess-board" :style="`--square-size: ${squareSize}px`">
 		<div v-for="(row, rowIndex) in board" :key="rowIndex" class="chess-row">
-			<div class="border-left board-label">{{ 8 - rowIndex }}</div>
+			<div class="border-left board-label">{{ rowLabel(rowIndex) }}</div>
 			<div
 				v-for="square in row"
 				:key="square.square"
@@ -17,7 +17,7 @@
 		<div class="border-bottom">
 			<div class="blank">8</div>
 			<div v-for="i in 8" :key="i" class="board-label">
-				{{ String.fromCharCode("A".charCodeAt(0) + i - 1) }}
+				{{ colLabel(i) }}
 			</div>
 		</div>
 	</div>
@@ -25,9 +25,22 @@
 
 <script setup>
 import ChessPiece from "@/components/game/ChessPiece.vue";
-defineProps({
+const props = defineProps({
 	board: Array,
+	isReversed: Boolean,
 });
+const rowLabel = (rowIndex) => {
+	if (props.isReversed) {
+		return rowIndex + 1;
+	}
+	return 8 - rowIndex;
+};
+const colLabel = (colIndex) => {
+	if (props.isReversed) {
+		return String.fromCharCode("A".charCodeAt(0) + 8 - colIndex);
+	}
+	return String.fromCharCode("A".charCodeAt(0) + colIndex - 1);
+};
 const squareSize = 80;
 </script>
 

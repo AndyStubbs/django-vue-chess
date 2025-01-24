@@ -12,7 +12,7 @@ export async function loadBots() {
 			const bot = module.useBot();
 			bots.push({
 				id: bot.id,
-				displayName: bot.displayName,
+				name: bot.name,
 				rating: bot.rating,
 				getMove: bot.getMove,
 			});

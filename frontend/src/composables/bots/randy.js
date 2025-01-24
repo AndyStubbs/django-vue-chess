@@ -4,7 +4,7 @@
 
 export function useBot() {
 	const id = "randy";
-	const displayName = "Randy";
+	const name = "Randy";
 	const rating = 0;
 
 	const getMove = (chess) => {
@@ -18,7 +18,7 @@ export function useBot() {
 
 	return {
 		id,
-		displayName,
+		name,
 		rating,
 		getMove,
 	};

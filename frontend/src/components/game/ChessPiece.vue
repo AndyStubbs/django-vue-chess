@@ -36,20 +36,14 @@ let hoverElement = null;
 let moves = null;
 
 const cursor = computed(() => {
-	if (
-		gameStore.turn === gameStore.settings.userColor &&
-		props.square.color === gameStore.settings.userColor
-	) {
+	if (gameStore.turn === gameStore.userColor && props.square.color === gameStore.userColor) {
 		return isDragging.value ? "grabbing" : "grab";
 	}
 	return "not-allowed";
 });
 
 const mousedown = () => {
-	if (
-		props.square.color !== gameStore.settings.userColor ||
-		gameStore.turn !== gameStore.settings.userColor
-	) {
+	if (props.square.color !== gameStore.userColor || gameStore.turn !== gameStore.userColor) {
 		return;
 	}
 	hoverElement = null;
