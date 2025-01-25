@@ -23,6 +23,7 @@
 	--input-bg-color-1: #fff;
 	--border-color-1: #555;
 	--green-color-1: #4caf50;
+	--green-color-2: #145a16;
 	--light-overlay: rgba(255, 255, 255, 0.8);
 	--dark-overlay: rgba(0, 0, 0, 0.2);
 	--link-color: #2153c7;
@@ -63,6 +64,10 @@
 	--status-error-color: #833;
 	--status-info-color: #c1c1c1;
 	--status-warn-color: #c17108;
+
+	/* Board Colors */
+	--board-color-1-light: #f0d9b5;
+	--board-color-1-dark: #b58863;
 }
 
 .dark {

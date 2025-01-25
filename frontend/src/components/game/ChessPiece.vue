@@ -25,6 +25,7 @@ const gameStore = useGameStore();
 const props = defineProps({
 	square: Object,
 });
+const emit = defineEmits(["onPieceMoved"]);
 const isDragging = ref(false);
 const mousePosX = ref(0);
 const mousePosY = ref(0);
@@ -66,14 +67,16 @@ const mouseup = () => {
 		return;
 	}
 	const moveSquare = hoverElement.dataset.square;
+	const selectedMoves = [];
 	if (moveSquare !== "") {
 		for (const move of moves) {
 			if (move.to === moveSquare) {
-				gameStore.makeMove(move);
+				selectedMoves.push(move);
 			}
 		}
 	}
 	hoverElement = null;
+	emit("onPieceMoved", selectedMoves);
 };
 window.addEventListener("mousemove", (e) => {
 	if (isDragging.value) {

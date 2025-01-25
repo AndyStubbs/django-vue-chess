@@ -29,8 +29,9 @@
 						@click="openAccountModal"
 						variant="icon"
 						title="Login/Register Account"
-						><AccountIcon
-					/></CustomButton>
+					>
+						<AccountIcon />
+					</CustomButton>
 				</div>
 			</div>
 		</header>

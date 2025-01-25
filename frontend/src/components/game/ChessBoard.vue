@@ -11,7 +11,11 @@
 				@mouseover="$emit('squarehover')"
 			>
 				<div v-if="square.marked" class="mark" :class="square.marked">&nbsp;</div>
-				<ChessPiece v-if="square.type" :square="square"></ChessPiece>
+				<ChessPiece
+					v-if="square.type"
+					:square="square"
+					@on-piece-moved="$emit('onPieceMoved', $event)"
+				></ChessPiece>
 			</div>
 		</div>
 		<div class="border-bottom">
@@ -67,10 +71,10 @@ const squareSize = 80;
 	height: var(--square-size);
 }
 .chess-square.white {
-	background-color: #f0d9b5;
+	background-color: var(--board-color-1-light);
 }
 .chess-square.black {
-	background-color: #b58863;
+	background-color: var(--board-color-1-dark);
 }
 .chess-square.hovered {
 	border: 6px inset #ffffffaa;

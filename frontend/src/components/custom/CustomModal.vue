@@ -6,7 +6,7 @@
 		@click="handleBackdropClick"
 		@keydown.esc="closeModal"
 	>
-		<div class="modal-content" @click.stop ref="focusTrapElement">
+		<div class="modal-content" @click.stop ref="focusTrapElement" v-bind="$attrs">
 			<div class="modal-header">
 				<h3 v-if="title">{{ title }}</h3>
 				<CustomButton class="close-button" @click="closeModal" variant="icon"
@@ -27,6 +27,9 @@
 import { useSlots, ref } from "vue";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import { useFocusTrap } from "@/composables/useFocusTrap";
+defineOptions({
+	inheritAttrs: false,
+});
 const slots = useSlots();
 const { focusTrapElement } = useFocusTrap();
 const props = defineProps({
@@ -89,7 +92,7 @@ function handleBackdropClick() {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: 1px solid var(--border-color-1);
+	border-bottom: 1px solid currentColor;
 	padding-bottom: 0.5rem;
 	margin-bottom: 1rem;
 }
