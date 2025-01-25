@@ -32,7 +32,6 @@ const mousePosY = ref(0);
 const x = ref(0);
 const y = ref(0);
 const transition = ref("0");
-
 let hoverElement = null;
 let moves = null;
 
@@ -96,14 +95,27 @@ window.addEventListener("mousemove", (e) => {
 		y.value += diffY;
 
 		// Get the hover square
+		let isOverGame = false;
 		const elementsOver = document.elementsFromPoint(mousePosX.value, mousePosY.value);
 		elementsOver.forEach((el) => {
+			if (el.classList.contains("game")) {
+				isOverGame = true;
+			}
 			if (el.classList.contains("chess-square") && hoverElement !== el) {
 				hoverElement = el;
 				gameStore.addHovered(hoverElement.dataset.square);
 			}
 		});
-		console.log(x.value);
+
+		// If dragging outside the game area
+		if (!isOverGame) {
+			hoverElement = null;
+			gameStore.clearHovered();
+			x.value = 0;
+			y.value = 0;
+			isDragging.value = false;
+			transition.value = "0.25s";
+		}
 	}
 	mousePosX.value = e.clientX;
 	mousePosY.value = e.clientY;
