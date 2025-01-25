@@ -61,9 +61,9 @@ const mousedown = () => {
 const mouseup = () => {
 	isDragging.value = false;
 	transition.value = "0.25s";
-	x.value = 0;
-	y.value = 0;
 	if (!hoverElement) {
+		x.value = 0;
+		y.value = 0;
 		return;
 	}
 	const moveSquare = hoverElement.dataset.square;
@@ -75,8 +75,18 @@ const mouseup = () => {
 			}
 		}
 	}
+	if (moves.length < 2) {
+		x.value = 0;
+		y.value = 0;
+	}
 	hoverElement = null;
-	emit("onPieceMoved", selectedMoves);
+	emit("onPieceMoved", {
+		moves: selectedMoves,
+		onComplete: () => {
+			x.value = 0;
+			y.value = 0;
+		},
+	});
 };
 window.addEventListener("mousemove", (e) => {
 	if (isDragging.value) {

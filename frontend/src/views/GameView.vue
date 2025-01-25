@@ -62,6 +62,7 @@ const gameStore = useGameStore();
 // Refs
 const showPromotion = ref(false);
 
+let onPromotionComplete = null;
 let promotions = [];
 let interval = null;
 const run = (start) => {
@@ -78,11 +79,12 @@ const reset = () => {
 const makeRandomMove = () => {
 	gameStore.makeRandomMove();
 };
-const onPieceMoved = (moves) => {
+const onPieceMoved = ({ moves, onComplete }) => {
 	console.log(moves);
 	if (moves.length === 1) {
 		gameStore.makeMove(moves[0]);
 	} else if (moves.length > 0) {
+		onPromotionComplete = onComplete;
 		promotions = moves;
 		showPromotion.value = true;
 	}
@@ -95,9 +97,11 @@ const promote = (promoted) => {
 		}
 	}
 	showPromotion.value = false;
+	onPromotionComplete();
 };
 const cancelPromotion = () => {
 	showPromotion.value = false;
+	onPromotionComplete();
 };
 
 // Hooks
