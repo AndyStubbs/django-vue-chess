@@ -34,7 +34,7 @@ defineProps({
 	display: flex;
 	flex-direction: row;
 	column-gap: 8px;
-	width: 300px;
+	width: 310px;
 	height: 80px;
 	color: var(--fg-color-1);
 	border: 3px solid var(--shadow-color-1);
@@ -82,8 +82,8 @@ defineProps({
 	margin-left: 12px;
 }
 .captures img {
-	width: 32px;
-	height: 32px;
+	width: 30px;
+	height: 30px;
 	margin-left: -10px;
 }
 .captures img.p {

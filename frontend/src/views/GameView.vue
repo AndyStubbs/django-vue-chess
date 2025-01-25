@@ -45,11 +45,30 @@
 				<img :src="gameStore.userColor === 'w' ? PIECES.Q : PIECES.q" />
 			</CustomButton>
 		</CustomModal>
+		<CustomModal title="Game Over" :is-visible="showGameOver" @close="closeGameOver">
+			<div style="text-align: center">
+				<div v-if="gameStore.gameover === 'tie'">
+					<h3>{{ gameStore.gameoverType }}!</h3>
+					<div style="display: flex; justify-content: center">
+						<img :src="PIECES.K" alt="White King" />
+						<img :src="PIECES.k" alt="Black King" />
+					</div>
+				</div>
+				<div v-else>
+					<h3>
+						Checkmate!
+						{{ gameStore.gameover ? gameStore.players[gameStore.gameover].name : "" }}
+						Wins!
+					</h3>
+					<img :src="gameStore.gameover === 'w' ? PIECES.K : PIECES.k" alt="White King" />
+				</div>
+			</div>
+		</CustomModal>
 	</Teleport>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useGameStore } from "@/stores/game";
 import CustomButton from "@/components/custom/CustomButton.vue";
 import ChessBoard from "@/components/game/ChessBoard.vue";
@@ -61,6 +80,7 @@ const gameStore = useGameStore();
 
 // Refs
 const showPromotion = ref(false);
+const showGameOver = ref(false);
 
 let onPromotionComplete = null;
 let promotions = [];
@@ -103,6 +123,22 @@ const cancelPromotion = () => {
 	showPromotion.value = false;
 	onPromotionComplete();
 };
+const closeGameOver = () => {
+	showGameOver.value = false;
+	isGameOverShown = false;
+};
+
+// Watchs
+let isGameOverShown = false;
+watch(
+	() => gameStore.gameover,
+	(gameover) => {
+		if (gameover !== null && !isGameOverShown) {
+			isGameOverShown = true;
+			showGameOver.value = true;
+		}
+	},
+);
 
 // Hooks
 onMounted(() => {
@@ -122,7 +158,7 @@ onMounted(() => {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	column-gap: 32px;
+	column-gap: 18px;
 }
 .actions {
 	margin-top: 16px;

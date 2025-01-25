@@ -57,20 +57,6 @@ export const useGameStore = defineStore("game", () => {
 	let opponentType = null;
 	let mode = null;
 	const marks = new Map();
-	const board = shallowRef([]);
-	const turn = ref("w");
-	const players = ref({
-		w: {
-			displayName: "Player 1 (0)",
-			time: 0,
-			captures: [],
-		},
-		b: {
-			displayName: "Player 2 (0)",
-			time: 0,
-			captures: [],
-		},
-	});
 	const staticPlayersData = {
 		w: {
 			name: null,
@@ -87,7 +73,27 @@ export const useGameStore = defineStore("game", () => {
 			bot: null,
 		},
 	};
+
+	// Refs
+	const board = shallowRef([]);
+	const turn = ref("w");
+	const players = ref({
+		w: {
+			displayName: "Player 1 (0)",
+			name: "Player 1",
+			time: 0,
+			captures: [],
+		},
+		b: {
+			displayName: "Player 2 (0)",
+			name: "Player 2",
+			time: 0,
+			captures: [],
+		},
+	});
 	const userColor = ref("w");
+	const gameover = ref(null);
+	const gameoverType = ref(null);
 
 	const setGameSettings = (settings) => {
 		opponentType = settings.opponentType;
@@ -111,14 +117,8 @@ export const useGameStore = defineStore("game", () => {
 				const captured = turn.value === "b" ? move.captured.toUpperCase() : move.captured;
 				players.value[turn.value].captures.push(captured);
 				players.value[turn.value].captures.sort((a, b) => {
-					console.log(
-						a,
-						b,
-						PIECE_WEIGHTS[a.toLowerCase()] - PIECE_WEIGHTS[b.toLowerCase()],
-					);
 					return PIECE_WEIGHTS[a.toLowerCase()] - PIECE_WEIGHTS[b.toLowerCase()];
 				});
-				console.log(players.value[turn.value].captures);
 			}
 			clearMarks();
 			clearHovered();
@@ -145,13 +145,28 @@ export const useGameStore = defineStore("game", () => {
 
 	const endTurn = async () => {
 		if (chess.isGameOver()) {
+			console.log("Game Over");
 			if (chess.isDraw()) {
-				alert("Draw");
+				console.log("DRAW");
+				gameover.value = "tie";
+				if (chess.isDrawByFiftyMoves()) {
+					gameoverType.value = "Draw by 50 Moves";
+				} else {
+					gameoverType.value = "Draw by Insufficient Material";
+				}
+			} else if (chess.isStalemate()) {
+				console.log("STALEMATE");
+				gameover.value = "tie";
+				gameoverType.value = "Stalemate";
+			} else if (chess.isThreefoldRepetition()) {
+				console.log("THREEFOLD REPETITION");
+				gameover.value = "tie";
+				gameoverType.value = "Stalemate";
 			} else {
 				if (turn.value === "b") {
-					alert("White Wins!");
+					gameover.value = "w";
 				} else {
-					alert("Black Wins");
+					gameover.value = "b";
 				}
 			}
 		} else {
@@ -161,6 +176,7 @@ export const useGameStore = defineStore("game", () => {
 				makeMove(move);
 			}
 		}
+		console.log(gameoverType.value);
 	};
 
 	const getValidMoves = (square) => {
@@ -192,6 +208,8 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const resetGame = () => {
+		gameover.value = null;
+		gameoverType.value = null;
 		chess = new Chess();
 		chess.setHeader("White", staticPlayersData.w.name);
 		chess.setHeader("Black", staticPlayersData.b.name);
@@ -266,6 +284,7 @@ export const useGameStore = defineStore("game", () => {
 			staticPlayersData.w.userId = playersNewData.w.userId;
 			staticPlayersData.w.botId = playersNewData.w.botId;
 			players.value.w.displayName = `${playersNewData.w.name} (${playersNewData.w.rating})`;
+			players.value.w.name = playersNewData.w.name;
 		}
 		players.value.w.time = 0;
 		players.value.w.captures = [];
@@ -277,6 +296,7 @@ export const useGameStore = defineStore("game", () => {
 			staticPlayersData.b.userId = playersNewData.b.userId;
 			staticPlayersData.b.botId = playersNewData.b.botId;
 			players.value.b.displayName = `${playersNewData.b.name} (${playersNewData.b.rating})`;
+			players.value.b.name = playersNewData.b.name;
 		}
 		players.value.b.time = 0;
 		players.value.b.captures = [];
@@ -307,6 +327,8 @@ export const useGameStore = defineStore("game", () => {
 		turn,
 		players,
 		userColor,
+		gameover,
+		gameoverType,
 
 		// Game Methods
 		setGameSettings,
