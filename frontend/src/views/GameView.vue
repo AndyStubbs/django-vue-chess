@@ -9,13 +9,15 @@
 			<div class="scoreboards">
 				<PlayerScoreboard
 					color="w"
-					:active="gameStore.turn === 'w'"
+					:active="!gameStore.gameover && gameStore.turn === 'w'"
 					:player="gameStore.players.w"
+					:start-time="gameStore.turnStartTime"
 				/>
 				<PlayerScoreboard
 					color="b"
-					:active="gameStore.turn === 'b'"
+					:active="!gameStore.gameover && gameStore.turn === 'b'"
 					:player="gameStore.players.b"
+					:start-time="gameStore.turnStartTime"
 				/>
 			</div>
 			<div class="actions">

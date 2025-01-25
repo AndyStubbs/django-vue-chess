@@ -6,7 +6,13 @@
 		<div class="details">
 			<div class="name">
 				<div>{{ player.displayName }}</div>
-				<div class="time">08:13</div>
+				<div class="time">
+					<span class="digit">{{ digit1 }}</span>
+					<span class="digit">{{ digit2 }}</span>
+					<span class="colon">:</span>
+					<span class="digit">{{ digit3 }}</span>
+					<span class="digit">{{ digit4 }}</span>
+				</div>
 			</div>
 			<div class="captures">
 				<img
@@ -21,11 +27,41 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
 import { PIECES } from "@/utils/constants";
-defineProps({
+const props = defineProps({
 	player: Object,
 	color: String,
 	active: Boolean,
+	startTime: Number,
+});
+
+// Refs
+const time = ref(0);
+setInterval(() => {
+	if (props.active && props.startTime) {
+		const elapsed = new Date().getTime() - props.startTime;
+		time.value = props.player.timeRemaining - elapsed;
+	} else {
+		time.value = props.player.timeRemaining;
+	}
+}, 500);
+
+const digit1 = computed(() => {
+	const minutes = Math.floor(time.value / 60000);
+	return minutes.toString().padStart(2, "0")[0];
+});
+const digit2 = computed(() => {
+	const minutes = Math.floor(time.value / 60000);
+	return minutes.toString().padStart(2, "0")[1];
+});
+const digit3 = computed(() => {
+	const seconds = Math.floor((time.value % 60000) / 1000);
+	return seconds.toString().padStart(2, "0")[0];
+});
+const digit4 = computed(() => {
+	const seconds = Math.floor((time.value % 60000) / 1000);
+	return seconds.toString().padStart(2, "0")[1];
 });
 </script>
 
@@ -77,6 +113,15 @@ defineProps({
 	background-color: var(--shadow-color-4);
 	text-shadow: 2px 1px 11px var(--input-bg-color-1);
 	color: var(--fg-color-3);
+	display: flex;
+}
+.time .digit {
+	width: 14px;
+	text-align: center;
+}
+.time .colon {
+	width: 4px;
+	text-align: center;
 }
 .captures {
 	margin-left: 12px;

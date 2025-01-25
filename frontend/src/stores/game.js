@@ -77,17 +77,18 @@ export const useGameStore = defineStore("game", () => {
 	// Refs
 	const board = shallowRef([]);
 	const turn = ref("w");
+	const turnStartTime = ref(null);
 	const players = ref({
 		w: {
 			displayName: "Player 1 (0)",
 			name: "Player 1",
-			time: 0,
+			timeRemaining: 0,
 			captures: [],
 		},
 		b: {
 			displayName: "Player 2 (0)",
 			name: "Player 2",
-			time: 0,
+			timeRemaining: 0,
 			captures: [],
 		},
 	});
@@ -113,6 +114,13 @@ export const useGameStore = defineStore("game", () => {
 	const makeMove = (move) => {
 		try {
 			chess.move(move);
+			if (turnStartTime.value) {
+				console.log(turnStartTime.value);
+				const elapsed = new Date().getTime() - turnStartTime.value;
+				console.log(elapsed);
+				players.value[turn.value].timeRemaining -= elapsed;
+			}
+			turnStartTime.value = new Date().getTime();
 			if (move.captured) {
 				const captured = turn.value === "b" ? move.captured.toUpperCase() : move.captured;
 				players.value[turn.value].captures.push(captured);
@@ -228,7 +236,7 @@ export const useGameStore = defineStore("game", () => {
 						rating: staticPlayersData.w.rating,
 						userId: staticPlayersData.w.userId,
 						botId: staticPlayersData.w.botId,
-						time: players.value.w.time,
+						timeRemaining: players.value.w.timeRemaining,
 						captures: players.value.w.captures,
 					},
 					b: {
@@ -236,7 +244,7 @@ export const useGameStore = defineStore("game", () => {
 						rating: staticPlayersData.b.rating,
 						userId: staticPlayersData.b.userId,
 						botId: staticPlayersData.b.botId,
-						time: players.value.b.time,
+						timeRemaining: players.value.b.timeRemaining,
 						captures: players.value.b.captures,
 					},
 				},
@@ -260,9 +268,9 @@ export const useGameStore = defineStore("game", () => {
 		mode = loadedSettings.mode;
 		userColor.value = loadedSettings.userColor;
 		resetPlayers(loadedSettings.players);
-		players.value.w.time = loadedSettings.players.w.time;
+		players.value.w.timeRemaining = loadedSettings.players.w.timeRemaining;
 		players.value.w.captures = loadedSettings.players.w.captures;
-		players.value.b.time = loadedSettings.players.b.time;
+		players.value.b.timeRemaining = loadedSettings.players.b.timeRemaining;
 		players.value.b.captures = loadedSettings.players.b.captures;
 
 		// Load Chess Game
@@ -283,7 +291,7 @@ export const useGameStore = defineStore("game", () => {
 			players.value.w.displayName = `${playersNewData.w.name} (${playersNewData.w.rating})`;
 			players.value.w.name = playersNewData.w.name;
 		}
-		players.value.w.time = 0;
+		players.value.w.timeRemaining = mode.time * 1000 * 60;
 		players.value.w.captures = [];
 
 		// Black player
@@ -295,7 +303,7 @@ export const useGameStore = defineStore("game", () => {
 			players.value.b.displayName = `${playersNewData.b.name} (${playersNewData.b.rating})`;
 			players.value.b.name = playersNewData.b.name;
 		}
-		players.value.b.time = 0;
+		players.value.b.timeRemaining = mode.time * 1000 * 60;
 		players.value.b.captures = [];
 
 		// Load bots
@@ -322,6 +330,7 @@ export const useGameStore = defineStore("game", () => {
 		chess,
 		board,
 		turn,
+		turnStartTime,
 		players,
 		userColor,
 		gameover,
