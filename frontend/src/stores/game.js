@@ -145,9 +145,7 @@ export const useGameStore = defineStore("game", () => {
 
 	const endTurn = async () => {
 		if (chess.isGameOver()) {
-			console.log("Game Over");
 			if (chess.isDraw()) {
-				console.log("DRAW");
 				gameover.value = "tie";
 				if (chess.isDrawByFiftyMoves()) {
 					gameoverType.value = "Draw by 50 Moves";
@@ -155,11 +153,9 @@ export const useGameStore = defineStore("game", () => {
 					gameoverType.value = "Draw by Insufficient Material";
 				}
 			} else if (chess.isStalemate()) {
-				console.log("STALEMATE");
 				gameover.value = "tie";
 				gameoverType.value = "Stalemate";
 			} else if (chess.isThreefoldRepetition()) {
-				console.log("THREEFOLD REPETITION");
 				gameover.value = "tie";
 				gameoverType.value = "Stalemate";
 			} else {
@@ -176,7 +172,6 @@ export const useGameStore = defineStore("game", () => {
 				makeMove(move);
 			}
 		}
-		console.log(gameoverType.value);
 	};
 
 	const getValidMoves = (square) => {

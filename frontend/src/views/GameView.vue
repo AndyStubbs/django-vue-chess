@@ -100,7 +100,6 @@ const makeRandomMove = () => {
 	gameStore.makeRandomMove();
 };
 const onPieceMoved = ({ moves, onComplete }) => {
-	console.log(moves);
 	if (moves.length === 1) {
 		gameStore.makeMove(moves[0]);
 	} else if (moves.length > 0) {
