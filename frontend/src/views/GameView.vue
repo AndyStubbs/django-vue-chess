@@ -29,7 +29,7 @@
 		<CustomModal
 			title="Promotion"
 			:isVisible="showPromotion"
-			style="max-width: 370px; background-color: var(--green-color-2); color: white"
+			style="max-width: 370px; color: white"
 			@close="cancelPromotion"
 		>
 			<CustomButton variant="icon" @click="promote('n')">

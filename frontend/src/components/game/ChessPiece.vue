@@ -75,7 +75,7 @@ const mouseup = () => {
 			}
 		}
 	}
-	if (moves.length < 2) {
+	if (selectedMoves.length < 2) {
 		x.value = 0;
 		y.value = 0;
 	}
@@ -103,6 +103,7 @@ window.addEventListener("mousemove", (e) => {
 				gameStore.addHovered(hoverElement.dataset.square);
 			}
 		});
+		console.log(x.value);
 	}
 	mousePosX.value = e.clientX;
 	mousePosY.value = e.clientY;
