@@ -145,20 +145,22 @@ export const useGameStore = defineStore("game", () => {
 
 	const endTurn = async () => {
 		if (chess.isGameOver()) {
-			if (chess.isDraw()) {
+			if (chess.isThreefoldRepetition()) {
 				gameover.value = "tie";
-				if (chess.isDrawByFiftyMoves()) {
-					gameoverType.value = "Draw by 50 Moves";
-				} else {
-					gameoverType.value = "Draw by Insufficient Material";
-				}
+				gameoverType.value = "Draw by Threefold Repetition";
+			} else if (chess.isDrawByFiftyMoves()) {
+				gameover.value = "tie";
+				gameoverType.value = "Draw by 50 Moves";
 			} else if (chess.isStalemate()) {
 				gameover.value = "tie";
 				gameoverType.value = "Stalemate";
-			} else if (chess.isThreefoldRepetition()) {
+			} else if (chess.isInsufficientMaterial()) {
 				gameover.value = "tie";
-				gameoverType.value = "Stalemate";
-			} else {
+				gameoverType.value = "Draw by Insufficient Material";
+			} else if (chess.isDraw()) {
+				gameover.value = "tie";
+				gameoverType.value = "Draw";
+			} else if (chess.isCheckmate()) {
 				if (turn.value === "b") {
 					gameover.value = "w";
 				} else {
