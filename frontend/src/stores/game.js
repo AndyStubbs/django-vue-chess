@@ -213,6 +213,7 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const resetGame = () => {
+		turnStartTime.value = null;
 		gameover.value = null;
 		gameoverType.value = null;
 		chess = new Chess();
