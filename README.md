@@ -49,4 +49,4 @@ a radio group and uses buttons to toggle options.
 ### Prerequisites
 - Python 3.8+
 - Node.js 16+
-- PostgreSQL
+- SQLLite
