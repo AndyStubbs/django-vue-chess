@@ -1,4 +1,4 @@
-//compoasables/bots/useRandyBot.js
+//compoasables/bots/randy.js
 
 "use strict";
 
@@ -16,10 +16,15 @@ export function useBot() {
 		});
 	};
 
+	const updateEngine = () => {
+		return null;
+	};
+
 	return {
 		id,
 		name,
 		rating,
 		getMove,
+		updateEngine,
 	};
 }

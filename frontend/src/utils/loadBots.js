@@ -15,6 +15,7 @@ export async function loadBots() {
 				name: bot.name,
 				rating: bot.rating,
 				getMove: bot.getMove,
+				updateEngine: bot.updateEngine,
 			});
 		}
 	}

@@ -113,6 +113,17 @@ export const useGameStore = defineStore("game", () => {
 
 	const makeMove = (move) => {
 		try {
+			// Update the bot engines with evaluations before making the move
+			const botW = staticPlayersData.w.bot;
+			if (botW) {
+				botW.updateEngine(chess, move);
+			}
+			const botB = staticPlayersData.b.bot;
+			if (botB) {
+				botB.updateEngine(chess, move);
+			}
+
+			// Make the move
 			chess.move(move);
 			if (turnStartTime.value) {
 				console.log(turnStartTime.value);
@@ -178,7 +189,7 @@ export const useGameStore = defineStore("game", () => {
 		} else {
 			const bot = staticPlayersData[turn.value].bot;
 			if (bot) {
-				const move = await bot.getMove(chess);
+				const move = await bot.getMove(chess, turn.value);
 				makeMove(move);
 			}
 		}
