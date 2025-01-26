@@ -1,5 +1,6 @@
 <template>
 	<div>
+		{{ gameStore.state }}
 		<div class="game">
 			<ChessBoard
 				:board="gameStore.board"

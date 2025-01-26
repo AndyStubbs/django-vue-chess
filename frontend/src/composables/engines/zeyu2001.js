@@ -15,6 +15,7 @@
 
 "use strict";
 
+import TinyQueue from "tinyqueue";
 import { Chess } from "chess.js";
 
 var weights = { p: 100, n: 280, b: 320, r: 479, q: 929, k: 60000, k_e: 60000 };
@@ -305,26 +306,37 @@ function updateEngine(game, move) {
 
 /*
  * Calculates the best legal move for the given color using BFS.
- * Tracks each branch independently and uses `maxSearchTime` to return the best result within the time limit.
+ * Tracks each branch independently and uses `maxSearchTime` to return the best result within the
+ * time limit.
  */
 async function getBestMoveAsync(game, color, maxDepth, maxSearchTime) {
 	return new Promise((resolve) => {
 		const startTime = Date.now();
-		const queue = [];
+
+		// Priority queue: higher priority values processed first
+		const queue = new TinyQueue([], (a, b) => b.priority - a.priority);
+
 		let bestMove = null;
 		let bestMoveValue = Number.NEGATIVE_INFINITY;
 
-		// Initialize the queue with root moves
+		// Initialize the priority queue with root moves
 		const initialMoves = game.moves({ verbose: true });
 		initialMoves.sort(() => 0.5 - Math.random()); // Randomize moves to avoid repetition
 		for (const move of initialMoves) {
 			const clonedGame = new Chess(game.fen()); // Clone the game state for each root move
+			const newSum = evaluateBoard(
+				clonedGame,
+				move,
+				color === "b" ? globalSum : -globalSum,
+				color,
+			);
 			queue.push({
 				game: clonedGame,
 				move,
 				rootMove: move,
 				depth: 1,
-				sum: color === "b" ? globalSum : -globalSum,
+				sum: newSum,
+				priority: newSum,
 			});
 		}
 
@@ -341,31 +353,32 @@ async function getBestMoveAsync(game, color, maxDepth, maxSearchTime) {
 				return;
 			}
 
-			// Dequeue the next item
-			const { game: currentGame, move, rootMove, depth, sum } = queue.shift();
+			// Dequeue the highest-priority item
+			const { game: currentGame, move, rootMove, depth, sum } = queue.pop();
 
 			// Make the move on the cloned game state
 			currentGame.move(move);
-			const newSum = evaluateBoard(currentGame, move, sum, color);
 
 			// Update the best move if a better one is found
-			if (newSum > bestMoveValue) {
+			if (sum > bestMoveValue) {
 				bestMove = rootMove; // Always track the original move from the root
-				bestMoveValue = newSum;
+				bestMoveValue = sum;
 			}
 
-			// Add children to the queue if within depth
+			// Add children to the priority queue if within depth
 			if (depth < maxDepth) {
 				const children = currentGame.moves({ verbose: true });
 				children.sort(() => 0.5 - Math.random()); // Randomize again
 				for (const child of children) {
 					const childGame = new Chess(currentGame.fen()); // Clone state for each child
+					const childSum = evaluateBoard(childGame, child, sum, color);
 					queue.push({
 						game: childGame,
 						move: child,
 						rootMove,
 						depth: depth + 1,
-						sum: newSum,
+						sum: childSum,
+						priority: childSum,
 					});
 				}
 			}

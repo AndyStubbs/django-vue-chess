@@ -12,7 +12,7 @@ export function useBot() {
 	const engine = useEngine();
 
 	const getMove = async (chess, color) => {
-		const [bestMove] = await engine.getBestMoveAsync(chess, color, DEPTH);
+		const [bestMove] = await engine.getBestMoveAsync(chess, color, DEPTH, 10000);
 		return bestMove;
 	};
 

@@ -95,6 +95,7 @@ export const useGameStore = defineStore("game", () => {
 	const userColor = ref("w");
 	const gameover = ref(null);
 	const gameoverType = ref(null);
+	const state = ref("Loaded");
 
 	const setGameSettings = (settings) => {
 		opponentType = settings.opponentType;
@@ -103,6 +104,7 @@ export const useGameStore = defineStore("game", () => {
 		resetPlayers(settings.players);
 		userColor.value = settings.userColor;
 		resetGame();
+		state.value = "Game Setup";
 	};
 
 	const updateBoard = () => {
@@ -111,7 +113,7 @@ export const useGameStore = defineStore("game", () => {
 		saveGame();
 	};
 
-	const makeMove = async (move) => {
+	const makeMove = (move) => {
 		try {
 			// Update the bot engines with evaluations before making the move
 			const botW = staticPlayersData.w.bot;
@@ -145,6 +147,7 @@ export const useGameStore = defineStore("game", () => {
 			endTurn();
 			return true;
 		} catch (ex) {
+			state.value = `Error: ${ex}`;
 			console.error(ex);
 			return false;
 		}
@@ -190,7 +193,9 @@ export const useGameStore = defineStore("game", () => {
 		} else {
 			const bot = staticPlayersData[turn.value].bot;
 			if (bot) {
+				state.value = `Waiting for bot ${bot.name} turn`;
 				const move = await bot.getMove(chess, turn.value);
+				state.value = `Bot: ${bot.name} turn calculated`;
 				makeMove(move);
 			}
 		}
@@ -348,6 +353,7 @@ export const useGameStore = defineStore("game", () => {
 		userColor,
 		gameover,
 		gameoverType,
+		state,
 
 		// Game Methods
 		setGameSettings,
