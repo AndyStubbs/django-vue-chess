@@ -1,10 +1,11 @@
 # Django-Vue Chess App
 
 ## Overview
-The **Django-Vue Chess App** is a feature-rich, web-based chess platform designed for both casual 
-players and enthusiasts. The application integrates Django for backend management and Vue.js for a 
-dynamic, interactive frontend. Users can engage in chess games against AI bots or other players, 
-manage their accounts, and save game history for analysis.
+The **Django-Vue Chess App** is a web-based chess website. The website integrates Django for 
+backend management and Vue.js for a dynamic, interactive frontend. Users can engage in chess 
+games against AI bots. It's not complete but does have a working chess game and includes
+a sandbox of UI components I built for practice. Also has login/registration and session 
+authentication via JWT and a REST API.
 
 ### AI Bots
 - **Randy**: A beginner-friendly bot that makes completely random moves, ideal for kids or absolute 
@@ -14,6 +15,7 @@ seamless integration into this app.
 
 ### Current Limitations
 - **Time Mode**: While the timer functions, there are no consequences for running out of time.
+- **Easy AI**: Both AI's are pretty easy and could be improved.
 - **User Authentication**: Login is functional, but multiplayer games and matchmaking is not yet
  implemented.
 
