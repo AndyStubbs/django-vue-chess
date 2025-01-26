@@ -56,6 +56,7 @@ export const useGameStore = defineStore("game", () => {
 	let hovered = null;
 	let opponentType = null;
 	let mode = null;
+	let botsLoading = 0;
 	const marks = new Map();
 	const staticPlayersData = {
 		w: {
@@ -103,8 +104,8 @@ export const useGameStore = defineStore("game", () => {
 		userColor.value = settings.userColor;
 		resetPlayers(settings.players);
 		userColor.value = settings.userColor;
-		resetGame();
 		state.value = "Game Setup";
+		resetGame();
 	};
 
 	const updateBoard = () => {
@@ -126,12 +127,9 @@ export const useGameStore = defineStore("game", () => {
 			}
 
 			// Make the move
-			console.log(move);
 			chess.move(move);
 			if (turnStartTime.value) {
-				console.log(turnStartTime.value);
 				const elapsed = new Date().getTime() - turnStartTime.value;
-				console.log(elapsed);
 				players.value[turn.value].timeRemaining -= elapsed;
 			}
 			turnStartTime.value = new Date().getTime();
@@ -232,6 +230,9 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const startGame = () => {
+		if (botsLoading > 0) {
+			return;
+		}
 		endTurn();
 	};
 
@@ -245,7 +246,7 @@ export const useGameStore = defineStore("game", () => {
 		chess.setHeader("Date", new Date().toISOString().split("T")[0]);
 		resetPlayers();
 		updateBoard();
-		endTurn();
+		startGame();
 	};
 
 	const saveGame = () => {
@@ -344,9 +345,11 @@ export const useGameStore = defineStore("game", () => {
 	};
 
 	const loadBot = async (player) => {
+		botsLoading += 1;
 		const allBots = await loadBots();
+		botsLoading -= 1;
 		player.bot = allBots.find((bot) => bot.id === player.botId);
-		endTurn();
+		startGame();
 	};
 
 	return {
