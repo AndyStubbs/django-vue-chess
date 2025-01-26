@@ -107,6 +107,7 @@ var pstOpponent = { w: pst_b, b: pst_w };
 var pstSelf = { w: pst_w, b: pst_b };
 
 let globalSum = 0;
+const BATCH_SIZE = 1000;
 
 /*
  * Evaluates the board at this point in time,
@@ -194,111 +195,6 @@ function evaluateBoard(game, move, prevSum, color) {
 	return prevSum;
 }
 
-/*
- * Performs the minimax algorithm to choose the best move: https://en.wikipedia.org/wiki/Minimax
- * (pseudocode provided)
- * Recursively explores all possible moves up to a given depth, and evaluates the game board at the
- * leaves.
- *
- * Basic idea: maximize the minimum value of the position resulting from the opponent's possible
- * following moves.
- * Optimization: alpha-beta pruning: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
- * (pseudocode provided)
- *
- * Inputs:
- *  - game:                 the game object.
- *  - depth:                the depth of the recursive tree of all possible moves
- * 							(i.e. height limit).
- *  - isMaximizingPlayer:   true if the current layer is maximizing, false otherwise.
- *  - sum:                  the sum (evaluation) so far at the current layer.
- *  - color:                the color of the current player.
- *
- * Output:
- *  the best move at the root of the current subtree.
- */
-function minimax(game, depth, alpha, beta, isMaximizingPlayer, sum, color) {
-	var children = game.moves({ verbose: true });
-
-	// Sort moves randomly, so the same move isn't always picked on ties
-	children.sort(function () {
-		return 0.5 - Math.random();
-	});
-
-	var currMove;
-	// Maximum depth exceeded or node is a terminal node (no children)
-	if (depth === 0 || children.length === 0) {
-		return [null, sum];
-	}
-
-	// Find maximum/minimum from list of 'children' (possible moves)
-	var maxValue = Number.NEGATIVE_INFINITY;
-	var minValue = Number.POSITIVE_INFINITY;
-	var bestMove;
-	for (var i = 0; i < children.length; i++) {
-		currMove = children[i];
-
-		// Note: in our case, the 'children' are simply modified game states
-		var currPrettyMove = game.move(currMove);
-		var newSum = evaluateBoard(game, currPrettyMove, sum, color);
-		var [, childValue] = minimax(
-			game,
-			depth - 1,
-			alpha,
-			beta,
-			!isMaximizingPlayer,
-			newSum,
-			color,
-		);
-
-		game.undo();
-
-		if (isMaximizingPlayer) {
-			if (childValue > maxValue) {
-				maxValue = childValue;
-				bestMove = currPrettyMove;
-			}
-			if (childValue > alpha) {
-				alpha = childValue;
-			}
-		} else {
-			if (childValue < minValue) {
-				minValue = childValue;
-				bestMove = currPrettyMove;
-			}
-			if (childValue < beta) {
-				beta = childValue;
-			}
-		}
-
-		// Alpha-beta pruning
-		if (alpha >= beta) {
-			break;
-		}
-	}
-
-	if (isMaximizingPlayer) {
-		return [bestMove, maxValue];
-	} else {
-		return [bestMove, minValue];
-	}
-}
-
-/*
- * Calculates the best legal move for the given color.
- */
-function getBestMove(game, color, depth) {
-	var [bestMove, bestMoveValue] = minimax(
-		game,
-		depth,
-		Number.NEGATIVE_INFINITY,
-		Number.POSITIVE_INFINITY,
-		true,
-		color === "b" ? globalSum : -globalSum,
-		color,
-	);
-	return [bestMove, bestMoveValue];
-}
-
 function updateEngine(game, move) {
 	globalSum = evaluateBoard(game, move, globalSum, "b");
 	return globalSum;
@@ -341,45 +237,47 @@ async function getBestMoveAsync(game, color, maxDepth, maxSearchTime) {
 		}
 
 		const processQueue = () => {
-			// Check time limit
-			if (Date.now() - startTime >= maxSearchTime) {
-				resolve([bestMove, bestMoveValue]);
-				return;
-			}
+			for (let batchIndex = 0; batchIndex < BATCH_SIZE; batchIndex += 1) {
+				// Check time limit
+				if (Date.now() - startTime >= maxSearchTime) {
+					resolve([bestMove, bestMoveValue]);
+					return;
+				}
 
-			if (queue.length === 0) {
-				// Queue is empty; all moves processed
-				resolve([bestMove, bestMoveValue]);
-				return;
-			}
+				if (queue.length === 0) {
+					// Queue is empty; all moves processed
+					resolve([bestMove, bestMoveValue]);
+					return;
+				}
 
-			// Dequeue the highest-priority item
-			const { game: currentGame, move, rootMove, depth, sum } = queue.pop();
+				// Dequeue the highest-priority item
+				const { game: currentGame, move, rootMove, depth, sum } = queue.pop();
 
-			// Make the move on the cloned game state
-			currentGame.move(move);
+				// Make the move on the cloned game state
+				currentGame.move(move);
 
-			// Update the best move if a better one is found
-			if (sum > bestMoveValue) {
-				bestMove = rootMove; // Always track the original move from the root
-				bestMoveValue = sum;
-			}
+				// Update the best move if a better one is found
+				if (sum > bestMoveValue) {
+					bestMove = rootMove; // Always track the original move from the root
+					bestMoveValue = sum;
+				}
 
-			// Add children to the priority queue if within depth
-			if (depth < maxDepth) {
-				const children = currentGame.moves({ verbose: true });
-				children.sort(() => 0.5 - Math.random()); // Randomize again
-				for (const child of children) {
-					const childGame = new Chess(currentGame.fen()); // Clone state for each child
-					const childSum = evaluateBoard(childGame, child, sum, color);
-					queue.push({
-						game: childGame,
-						move: child,
-						rootMove,
-						depth: depth + 1,
-						sum: childSum,
-						priority: childSum,
-					});
+				// Add children to the priority queue if within depth
+				if (depth < maxDepth) {
+					const children = currentGame.moves({ verbose: true });
+					children.sort(() => 0.5 - Math.random()); // Randomize again
+					for (const child of children) {
+						const childGame = new Chess(currentGame.fen()); // Clone state for each child
+						const childSum = evaluateBoard(childGame, child, sum, color);
+						queue.push({
+							game: childGame,
+							move: child,
+							rootMove,
+							depth: depth + 1,
+							sum: childSum,
+							priority: childSum,
+						});
+					}
 				}
 			}
 
@@ -395,7 +293,6 @@ async function getBestMoveAsync(game, color, maxDepth, maxSearchTime) {
 export function useEngine() {
 	return {
 		getBestMoveAsync,
-		getBestMove,
 		updateEngine,
 	};
 }

@@ -10,9 +10,12 @@ export function useBot() {
 	const rating = 100;
 	const DEPTH = 3;
 	const engine = useEngine();
+	let isWaiting = false;
 
 	const getMove = async (chess, color) => {
+		isWaiting = true;
 		const [bestMove] = await engine.getBestMoveAsync(chess, color, DEPTH, 10000);
+		isWaiting = false;
 		return bestMove;
 	};
 
@@ -26,5 +29,6 @@ export function useBot() {
 		rating,
 		getMove,
 		updateEngine,
+		isWaiting,
 	};
 }

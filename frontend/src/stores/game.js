@@ -126,6 +126,7 @@ export const useGameStore = defineStore("game", () => {
 			}
 
 			// Make the move
+			console.log(move);
 			chess.move(move);
 			if (turnStartTime.value) {
 				console.log(turnStartTime.value);
@@ -193,6 +194,11 @@ export const useGameStore = defineStore("game", () => {
 		} else {
 			const bot = staticPlayersData[turn.value].bot;
 			if (bot) {
+				if (bot.isWaiting) {
+					console.log("Duplicate move - returning");
+					return;
+				}
+				console.log("Calculating move for bot");
 				state.value = `Waiting for bot ${bot.name} turn`;
 				const move = await bot.getMove(chess, turn.value);
 				state.value = `Bot: ${bot.name} turn calculated`;

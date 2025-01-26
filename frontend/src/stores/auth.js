@@ -108,11 +108,8 @@ export const useAuthStore = defineStore("auth", {
 				this.tokenRefreshTimer = setTimeout(async () => {
 					await this.refreshAccessToken();
 				}, refreshTime);
-				console.log(`Refresh scheduled for ${refreshTime}`);
 			} else {
 				console.log("Already expired");
-				console.log(expirationTime);
-				console.log(expiresIn);
 			}
 		},
 
