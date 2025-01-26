@@ -111,7 +111,7 @@ export const useGameStore = defineStore("game", () => {
 		saveGame();
 	};
 
-	const makeMove = (move) => {
+	const makeMove = async (move) => {
 		try {
 			// Update the bot engines with evaluations before making the move
 			const botW = staticPlayersData.w.bot;
@@ -144,7 +144,8 @@ export const useGameStore = defineStore("game", () => {
 			updateBoard();
 			endTurn();
 			return true;
-		} catch {
+		} catch (ex) {
+			console.error(ex);
 			return false;
 		}
 	};

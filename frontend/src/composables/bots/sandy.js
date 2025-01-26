@@ -8,11 +8,12 @@ export function useBot() {
 	const id = "sandy";
 	const name = "Sandy";
 	const rating = 100;
-	const DEPTH = 1;
+	const DEPTH = 3;
 	const engine = useEngine();
 
-	const getMove = (chess, color) => {
-		return engine.getBestMove(chess, color, DEPTH)[0];
+	const getMove = async (chess, color) => {
+		const [bestMove] = await engine.getBestMoveAsync(chess, color, DEPTH);
+		return bestMove;
 	};
 
 	const updateEngine = (chess, move) => {

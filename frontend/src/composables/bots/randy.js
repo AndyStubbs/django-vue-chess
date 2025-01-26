@@ -7,7 +7,7 @@ export function useBot() {
 	const name = "Randy";
 	const rating = 0;
 
-	const getMove = (chess) => {
+	const getMove = async (chess) => {
 		const moves = chess.moves({ verbose: true });
 		return new Promise((resolve) => {
 			setTimeout(() => {
