@@ -14,7 +14,8 @@ seamless integration into this app.
 
 ### Current Limitations
 - **Time Mode**: While the timer functions, there are no consequences for running out of time.
-- **User Authentication**: Login is functional, but multiplayer matchmaking is not yet implemented.
+- **User Authentication**: Login is functional, but multiplayer games and matchmaking is not yet
+ implemented.
 
 ### Highlights
 The application showcases custom Vue.js components for an engaging chess-playing experience:
