@@ -45,6 +45,7 @@ a radio group and uses buttons to toggle options.
 - **Chess Engine**: Chess.js for game logic and a modified version of Zhang Zeyu's chess engine.
 - **Other Tools**:
   - Axios for HTTP requests.
+  - JWT for handling sessions in REST Framework.
 
 ## Installation
 ### Prerequisites
